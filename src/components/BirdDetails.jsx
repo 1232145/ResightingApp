@@ -1,19 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Button, InputNumber, Typography, Select, Row, Col } from 'antd';
+import { Form, Input, Button, InputNumber, Typography, Row, Col } from 'antd';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons'; // Import icons
-
 
 const { Item } = Form;
 const { Title } = Typography;
-const { Option } = Select;
 
 const styles = {
     text: {
         fontSize: '15px', // Adjust the font size as needed
-    },
-
-    label: {
-        fontSize: '17.5px', // Adjust the font size as needed
     },
 
     form: {
@@ -181,11 +175,13 @@ function BirdDetails({ handleNavigate, data, setData }) {
         form.setFieldsValue(data[0]);
     }
 
-    useEffect(() => {
+    const navigate = (idx) => {
+        saveData(data);
+        handleNavigate(idx);
+    }
 
-        return () => {
-            saveData(data);
-        }
+    useEffect(() => {
+        switchData(index)
     }, [])
 
     return (
@@ -263,7 +259,7 @@ function BirdDetails({ handleNavigate, data, setData }) {
                 <div style={styles.botbox}>
                     <Row>
                         <Col span={12} style={styles.col}>
-                            <div style={styles.label}>Species</div>
+                            <div style={styles.text}>Species</div>
                             <Item
                                 name="species"
                                 rules={[{ required: true, message: 'Please enter species!' }]}
@@ -280,12 +276,12 @@ function BirdDetails({ handleNavigate, data, setData }) {
                             </div>
                         </Col>
                         <Col span={12} style={styles.col}>
-                            <div style={styles.label}>Prox</div>
+                            <div style={styles.text}>Prox</div>
                             <Item
                                 name='prox'
                                 rules={[{ required: true, message: 'Please enter species!' }]}
                             >
-                                <Input value={form.getFieldValue('prox')} />
+                                <InputNumber value={form.getFieldValue('prox')} />
                             </Item>
 
                             <div style={styles.options}>
@@ -308,7 +304,7 @@ function BirdDetails({ handleNavigate, data, setData }) {
 
                 <div>
                     <div style={styles.buttonContainer}>
-                        <Button onClick={() => handleNavigate(0)}>
+                        <Button onClick={() => navigate(0)}>
                             Back to Stint
                         </Button>
                     </div>

@@ -77,15 +77,18 @@ function StintData() {
         saveAs(file, 'data.csv');
     }
 
-    // Function to set current time for Time Start and Time End
     const setCurrentTime = (field) => {
         const currentTime = new Date();
+        // const year = currentTime.getFullYear();
+        // const month = (currentTime.getMonth() + 1).toString().padStart(2, '0');
+        // const day = currentTime.getDate().toString().padStart(2, '0');
         const hours = currentTime.getHours().toString().padStart(2, '0');
         const minutes = currentTime.getMinutes().toString().padStart(2, '0');
         const time = `${hours}:${minutes}`;
 
         form.setFieldValue(field, time);
     }
+
 
     const handleNavigate = (dst) => {
         setCurrentPage(dst);
@@ -200,7 +203,7 @@ function StintData() {
     else if (currentPage === 1) {
         return (
             <>
-                <BirdDetails handleNavigate={handleNavigate} data={birdDetails} setData={setBirdDetails}/>
+                <BirdDetails handleNavigate={handleNavigate} data={birdDetails} setData={setBirdDetails} />
             </>
         )
     }
