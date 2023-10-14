@@ -45,13 +45,7 @@ function StintData() {
     const [form] = Form.useForm();
 
     //default bird details data
-    const [birdDetails, setBirdDetails] = useState([{
-        species: '',
-        time: '',
-        loc: '',
-        prox: 0,
-        birdNotes: '',
-    }]);
+    const [birdDetails, setBirdDetails] = useState([]);
 
     // Default stint data
     const [stint, setStint] = useState({

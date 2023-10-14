@@ -109,6 +109,9 @@ const styles = {
     }
 };
 
+const speciesOptions = ["ATPU", "ARTE"];
+const proxOptions = [1, 2, 5, 10, 15];
+
 function BirdDetails({ handleNavigate, data, setData }) {
     const [form] = Form.useForm();
 
@@ -121,13 +124,7 @@ function BirdDetails({ handleNavigate, data, setData }) {
         birdNotes: '',
     };
 
-    const speciesOptions = ["ATPU", "ARTE"];
-    const proxOptions = [1, 2, 5, 10, 15];
     const [index, setIndex] = useState(0);
-
-    useEffect(() => {
-        form.setFieldsValue(birdDetail);
-    }, []);
 
     const setCurrentTime = (field) => {
         const currentTime = new Date();
@@ -135,61 +132,62 @@ function BirdDetails({ handleNavigate, data, setData }) {
         const minutes = currentTime.getMinutes().toString().padStart(2, '0');
         const time = `${hours}:${minutes}`;
 
-        form.setFieldsValue({ [field]: time });
+        form.setFieldValue(field, time);
     };
 
-    const saveData = () => {
-        let currentData = form.getFieldsValue();
+    const saveData = (data) => {
+        const currentData = form.getFieldsValue();
         let updated = [...data];
         updated[index] = currentData;
         setData(updated);
     }
 
     const switchData = (idx) => {
-        saveData();
+        saveData(data);
         setIndex(idx);
         form.setFieldsValue(data[idx]);
     }
-    
+
     const addData = () => {
+        //create new added data
+        let updated = [...data];
+        updated.push({ ...birdDetail });
+
         //save current data
-        saveData();
-
-        //reset form and inputs
-        form.setFieldsValue(birdDetail);
-
-        //add new data
-        // setData([...data, {...birdDetail}]);
+        saveData(updated);
 
         //adjust index
-        setIndex(data.length);
+        setIndex(updated.length - 1);
+
+        //reset inputs
+        form.setFieldsValue({ ...birdDetail });
     }
 
     const removeData = () => {
         if (data.length > 0) {
-            let updated = [...data].filter((item, idx) => idx !== index);
-            setData(updated);
-            setIndex(index - 1);
-            form.setFieldsValue(birdDetail);
+            // let updated = [...data].filter((_item, idx) => idx !== index);
+            // setData(updated);
+            // setIndex(Math.min(index, updated.length - 1));
         }
     }
 
     useEffect(() => {
 
         return () => {
-            saveData();
+            saveData(data);
         }
     }, [])
 
     return (
         <div style={styles.container}>
             <Title level={3} style={{ marginBottom: '20px' }}>
-                Feeding form {index >= 0 && index + 1}
+                Feeding form {index + 1}
             </Title>
 
             <Form
                 form={form}
                 name="birdDetails"
+                initialValues={{ ...birdDetail }}
                 labelCol={{ xs: 24, sm: 8 }} // Responsive label column
                 wrapperCol={{ xs: 24, sm: 24 }} // Responsive wrapper column
                 style={styles.form}
@@ -236,9 +234,9 @@ function BirdDetails({ handleNavigate, data, setData }) {
                         </div>
                         <div style={styles.text}>List of data:</div>
                         <div style={styles.dataContainer}>
-                            {data.map((item, idx) => (
-                                <Button 
-                                key={idx}
+                            {data.map((_item, idx) => (
+                                <Button
+                                    key={idx}
                                     style={{
                                         ...styles.dataButton,
                                         ...(idx === index && styles.highlight),
