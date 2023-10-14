@@ -164,11 +164,21 @@ function BirdDetails({ handleNavigate, data, setData }) {
     }
 
     const removeData = () => {
-        if (data.length > 0) {
-            // let updated = [...data].filter((_item, idx) => idx !== index);
-            // setData(updated);
-            // setIndex(Math.min(index, updated.length - 1));
+        if (data.length > 1) {
+            //remove data
+            let updated = [...data].filter((_item, idx) => idx !== index);
+            setData(updated);
+
+            //reset inputs and index
+            setIndex(index - 1);
+            form.setFieldsValue(data[index - 1]);
         }
+    }
+
+    const removeAll = () => {
+        setData([{...birdDetail}]);
+        setIndex(0);
+        form.setFieldsValue(data[0]);
     }
 
     useEffect(() => {
@@ -287,6 +297,13 @@ function BirdDetails({ handleNavigate, data, setData }) {
                             </div>
                         </Col>
                     </Row>
+                </div>
+
+                <div>
+                    <div style={{ ...styles.botbox, justifyContent: 'flex-start' }}>
+                        <Button danger style={{ margin: 5 }} onClick={() => form.setFieldsValue({...birdDetail})}>Clear all</Button>
+                        <Button danger style={{ margin: 5 }} onClick={() => removeAll()}>Delete all</Button>
+                    </div>
                 </div>
 
                 <div>
