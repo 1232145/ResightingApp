@@ -162,7 +162,7 @@ function StintData() {
                                     labelCol={{ xs: 24, sm: 8, md: 8, lg: 8, xl: 8 }} // Responsive label column
                                     wrapperCol={{ xs: 24, sm: 16 }} // Responsive wrapper column
                                 >
-                                    <Input value={form.getFieldValue('timeEnd')} disabled />
+                                    <Input value={form.getFieldValue('timeEnd')} />
                                 </Item>
 
                                 <Button onClick={() => setCurrentTime("timeEnd")} size="small" style={styles.timeButton}>
@@ -200,17 +200,10 @@ function StintData() {
             </div>
         );
     }
-    else if (currentPage === 1) {
-        return (
-            <>
-                <BirdDetails handleNavigate={handleNavigate} data={birdDetails} setData={setBirdDetails} />
-            </>
-        )
-    }
     else {
         return (
             <>
-
+                <BirdDetails handleNavigate={handleNavigate} data={birdDetails} setData={setBirdDetails} />
             </>
         )
     }

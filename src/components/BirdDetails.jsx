@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, InputNumber, Typography, Row, Col } from 'antd';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons'; // Import icons
+import Band from './Band';
 
 const { Item } = Form;
 const { Title } = Typography;
@@ -83,7 +84,7 @@ const styles = {
     },
 
     dataButton: {
-        width: '30%',
+        width: '20%',
         height: '37.5px',
         margin: '2px',
     },
@@ -108,6 +109,8 @@ const proxOptions = [1, 2, 5, 10, 15];
 
 function BirdDetails({ handleNavigate, data, setData }) {
     const [form] = Form.useForm();
+    const [isBirdDetail, setIsBirdDetail] = useState(true); //true is bird detail, false is band data
+    const [index, setIndex] = useState(0);
 
     // Default bird detail data
     const birdDetail = {
@@ -116,9 +119,14 @@ function BirdDetails({ handleNavigate, data, setData }) {
         loc: '',
         prox: 0,
         birdNotes: '',
+        band: [{}, {}]
     };
 
-    const [index, setIndex] = useState(0);
+    const setBand = (band) => {
+        let update = [...data];
+        update[index].band = band;
+        setData(update);
+    }
 
     const setCurrentTime = (field) => {
         const currentTime = new Date();
@@ -170,7 +178,7 @@ function BirdDetails({ handleNavigate, data, setData }) {
     }
 
     const removeAll = () => {
-        setData([{...birdDetail}]);
+        setData([{ ...birdDetail }]);
         setIndex(0);
         form.setFieldsValue(data[0]);
     }
@@ -181,137 +189,151 @@ function BirdDetails({ handleNavigate, data, setData }) {
     }
 
     useEffect(() => {
-        switchData(index)
+        switchData(index);
     }, [])
 
-    return (
-        <div style={styles.container}>
-            <Title level={3} style={{ marginBottom: '20px' }}>
-                Feeding form {index + 1}
-            </Title>
+    if (isBirdDetail) {
+        return (
+            <div style={styles.container}>
+                <Title level={3} style={{ marginBottom: '20px' }}>
+                    Feeding form {index + 1}
+                </Title>
 
-            <Form
-                form={form}
-                name="birdDetails"
-                initialValues={{ ...birdDetail }}
-                labelCol={{ xs: 24, sm: 8 }} // Responsive label column
-                wrapperCol={{ xs: 24, sm: 24 }} // Responsive wrapper column
-                style={styles.form}
-            >
-                <div style={styles.topbox}>
-                    <div style={styles.leftTop}>
-                        <div style={styles.buttonContainer}>
-                            <Item
-                                label="Time"
-                                name="time"
-                                rules={[{ required: true, message: 'Please enter a time!' }]}
-                                style={{ margin: '0px' }}
-                            >
-                                <Input value={form.getFieldValue('time')} disabled />
-                            </Item>
+                <Form
+                    form={form}
+                    name="birdDetails"
+                    initialValues={{ ...birdDetail }}
+                    labelCol={{ xs: 24, sm: 8 }} // Responsive label column
+                    wrapperCol={{ xs: 24, sm: 24 }} // Responsive wrapper column
+                    style={styles.form}
+                >
+                    <Item hidden name="band"></Item>
 
-                            <Button onClick={() => setCurrentTime("time")} size="small" style={styles.timeButton}>
-                                Time
-                            </Button>
-                        </div>
-
-                        <Item name='birdNotes' label='Notes'>
-                            <Input.TextArea rows={5} style={styles.text} />
-                        </Item>
-                    </div>
-
-                    <div style={styles.rightTop}>
-                        <div>Number of data: {data.length}</div>
-                        <div>
-                            <Button
-                                icon={<PlusOutlined />}
-                                onClick={() => addData()}
-                                style={{ borderColor: 'green', color: 'green', margin: '5px 5px 5px 0px' }} // Customize "Add" button style
-                            >
-                                Add
-                            </Button>
-                            <Button
-                                icon={<MinusOutlined />}
-                                danger
-                                onClick={() => removeData()}
-                            >
-                                Remove
-                            </Button>
-                        </div>
-                        <div style={styles.text}>List of data:</div>
-                        <div style={styles.dataContainer}>
-                            {data.map((_item, idx) => (
-                                <Button
-                                    key={idx}
-                                    style={{
-                                        ...styles.dataButton,
-                                        ...(idx === index && styles.highlight),
-                                    }}
-                                    onClick={() => switchData(idx)}
+                    <div style={styles.topbox}>
+                        <div style={styles.leftTop}>
+                            <div style={styles.buttonContainer}>
+                                <Item
+                                    label="Time"
+                                    name="time"
+                                    rules={[{ required: true, message: 'Please enter a time!' }]}
+                                    style={{ margin: '0px' }}
                                 >
-                                    Data {idx + 1}
+                                    <Input value={form.getFieldValue('time')} />
+                                </Item>
+
+                                <Button onClick={() => setCurrentTime("time")} size="small" style={styles.timeButton}>
+                                    Time
                                 </Button>
-                            ))}
+                            </div>
+
+                            <Item name='birdNotes' label='Notes'>
+                                <Input.TextArea rows={5} style={styles.text} />
+                            </Item>
+                        </div>
+
+                        <div style={styles.rightTop}>
+                            <div>Number of data: {data.length}</div>
+                            <div>
+                                <Button
+                                    icon={<PlusOutlined />}
+                                    onClick={() => addData()}
+                                    style={{ borderColor: 'green', color: 'green', margin: '5px 5px 5px 0px' }}
+                                >
+                                    Add
+                                </Button>
+                                <Button
+                                    icon={<MinusOutlined />}
+                                    danger
+                                    onClick={() => removeData()}
+                                >
+                                    Remove
+                                </Button>
+                            </div>
+                            <div style={styles.text}>List of data:</div>
+                            <div style={styles.dataContainer}>
+                                {data.map((_item, idx) => (
+                                    <Button
+                                        key={idx}
+                                        style={{
+                                            ...styles.dataButton,
+                                            ...(idx === index && styles.highlight),
+                                        }}
+                                        onClick={() => switchData(idx)}
+                                    >
+                                        Data {idx + 1}
+                                    </Button>
+                                ))}
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div style={styles.botbox}>
-                    <Row>
-                        <Col span={12} style={styles.col}>
-                            <div style={styles.text}>Species</div>
-                            <Item
-                                name="species"
-                                rules={[{ required: true, message: 'Please enter species!' }]}
-                            >
-                                <Input value={form.getFieldValue('species')} />
-                            </Item>
+                    <div style={styles.botbox}>
+                        <Row>
+                            <Col span={12} style={styles.col}>
+                                <div style={styles.text}>Species</div>
+                                <Item
+                                    name="species"
+                                    rules={[{ required: true, message: 'Please enter species!' }]}
+                                >
+                                    <Input value={form.getFieldValue('species')} />
+                                </Item>
 
-                            <div style={styles.options}>
-                                {speciesOptions.map((item, index) => (
-                                    <Button key={index} style={styles.button} onClick={() => form.setFieldValue('species', item)}>
-                                        {item}
-                                    </Button>
-                                ))}
-                            </div>
-                        </Col>
-                        <Col span={12} style={styles.col}>
-                            <div style={styles.text}>Prox</div>
-                            <Item
-                                name='prox'
-                                rules={[{ required: true, message: 'Please enter species!' }]}
-                            >
-                                <InputNumber value={form.getFieldValue('prox')} />
-                            </Item>
+                                <div style={styles.options}>
+                                    {speciesOptions.map((item, index) => (
+                                        <Button key={index} style={styles.button} onClick={() => form.setFieldValue('species', item)}>
+                                            {item}
+                                        </Button>
+                                    ))}
+                                </div>
+                            </Col>
+                            <Col span={12} style={styles.col}>
+                                <div style={styles.text}>Prox</div>
+                                <Item
+                                    name='prox'
+                                    rules={[{ required: true, message: 'Please enter species!' }]}
+                                >
+                                    <InputNumber value={form.getFieldValue('prox')} />
+                                </Item>
 
-                            <div style={styles.options}>
-                                {proxOptions.map((item, index) => (
-                                    <Button key={index} style={styles.button} onClick={() => form.setFieldValue('prox', item)}>
-                                        {item}
-                                    </Button>
-                                ))}
-                            </div>
-                        </Col>
-                    </Row>
-                </div>
-
-                <div>
-                    <div style={{ ...styles.botbox, justifyContent: 'flex-start' }}>
-                        <Button danger style={{ margin: 5 }} onClick={() => form.setFieldsValue({...birdDetail})}>Clear all</Button>
-                        <Button danger style={{ margin: 5 }} onClick={() => removeAll()}>Delete all</Button>
+                                <div style={styles.options}>
+                                    {proxOptions.map((item, index) => (
+                                        <Button key={index} style={styles.button} onClick={() => form.setFieldValue('prox', item)}>
+                                            {item}
+                                        </Button>
+                                    ))}
+                                </div>
+                            </Col>
+                        </Row>
                     </div>
-                </div>
 
-                <div>
-                    <div style={styles.buttonContainer}>
-                        <Button onClick={() => navigate(0)}>
-                            Back to Stint
-                        </Button>
+                    <div>
+                        <div style={{ ...styles.botbox, justifyContent: 'flex-start' }}>
+                            <Button danger style={{ margin: 5 }} onClick={() => form.setFieldsValue({ ...birdDetail })}>Clear all</Button>
+                            <Button danger style={{ margin: 5 }} onClick={() => removeAll()}>Delete all</Button>
+                        </div>
                     </div>
-                </div>
-            </Form>
-        </div>
-    );
+
+                    <div>
+                        <div style={styles.buttonContainer}>
+                            <Button onClick={() => navigate(0)} style={{ marginRight: 10, borderColor: 'green', color: 'green' }}>
+                                Back to Stint
+                            </Button>
+                            <Button onClick={() => setIsBirdDetail(false)}>
+                                Band details
+                            </Button>
+                        </div>
+                    </div>
+                </Form>
+            </div>
+        )
+    }
+    else {
+        return (
+            <>
+                <Band index={index} handleNavigate={setIsBirdDetail} data={data[index].band} setData={setBand} styles={styles} />
+            </>
+        )
+    }
 }
 
 export default BirdDetails;
