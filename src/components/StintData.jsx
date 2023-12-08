@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { saveAs } from 'file-saver';
 import { Form, Input, Button, DatePicker, InputNumber, Row, Col, Typography } from 'antd';
 import BirdDetails from './BirdDetails';
@@ -40,12 +40,36 @@ const styles = {
     },
 };
 
+
+// Default band detail data
+const band = {
+    type: "",
+    color: "",
+    engrColor: "",
+    specFeat: "",
+    leg: "",
+    number: "",
+    wearScore: "",
+    read: "",
+    confidence: "",
+};
+
+// Default bird detail data
+const birdDetail = {
+    species: '',
+    time: '',
+    loc: '',
+    prox: 0,
+    birdNotes: '',
+    band: [{...band}, {...band}]
+};
+
 function StintData() {
     // Display stint/feeding data
     const [form] = Form.useForm();
 
     //default bird details data
-    const [birdDetails, setBirdDetails] = useState([]);
+    const [birdDetails, setBirdDetails] = useState([{...birdDetail}]);
 
     // Default stint data
     const [stint, setStint] = useState({
@@ -88,7 +112,6 @@ function StintData() {
 
         form.setFieldValue(field, time);
     }
-
 
     const handleNavigate = (dst) => {
         setCurrentPage(dst);
@@ -203,7 +226,7 @@ function StintData() {
     else {
         return (
             <>
-                <BirdDetails handleNavigate={handleNavigate} data={birdDetails} setData={setBirdDetails} />
+                <BirdDetails handleNavigate={handleNavigate} birdDetail={birdDetail} initBand={band} data={birdDetails} setData={setBirdDetails} />
             </>
         )
     }

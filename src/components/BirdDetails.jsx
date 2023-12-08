@@ -107,26 +107,11 @@ const styles = {
 const speciesOptions = ["ATPU", "ARTE"];
 const proxOptions = [1, 2, 5, 10, 15];
 
-function BirdDetails({ handleNavigate, data, setData }) {
+function BirdDetails({ handleNavigate, data, setData, birdDetail, initBand}) {
     const [form] = Form.useForm();
     const [isBirdDetail, setIsBirdDetail] = useState(true); //true is bird detail, false is band data
     const [index, setIndex] = useState(0);
-
-    // Default bird detail data
-    const birdDetail = {
-        species: '',
-        time: '',
-        loc: '',
-        prox: 0,
-        birdNotes: '',
-        band: [{}, {}]
-    };
-
-    const setBand = (band) => {
-        let update = [...data];
-        update[index].band = band;
-        setData(update);
-    }
+    const [band, setBand] = useState([...birdDetail.band]); 
 
     const setCurrentTime = (field) => {
         const currentTime = new Date();
@@ -141,6 +126,7 @@ function BirdDetails({ handleNavigate, data, setData }) {
         const currentData = form.getFieldsValue();
         let updated = [...data];
         updated[index] = currentData;
+        updated[index].band = band;
         setData(updated);
     }
 
@@ -191,6 +177,10 @@ function BirdDetails({ handleNavigate, data, setData }) {
     useEffect(() => {
         switchData(index);
     }, [])
+
+    useEffect(() => {
+        setBand(data[index].band);
+    }, [data])
 
     if (isBirdDetail) {
         return (
@@ -330,7 +320,7 @@ function BirdDetails({ handleNavigate, data, setData }) {
     else {
         return (
             <>
-                <Band index={index} handleNavigate={setIsBirdDetail} data={data[index].band} setData={setBand} styles={styles} />
+                <Band index={index} initialData={initBand} handleNavigate={setIsBirdDetail} birdDetails={data} data={band} setData={setBand} styles={styles} />
             </>
         )
     }

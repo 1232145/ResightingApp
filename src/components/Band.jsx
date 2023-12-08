@@ -9,25 +9,14 @@ const engravingColors = ["M", "W", "BLK", "BLU", "BRW", "None", "R", "Y"];
 const specialFeatures = ["DAR", "DBR", "HTwR", "HThR", "VR", "HNR", "VNR", "NC", "NBi"]
 const legs = ["L", "R"];
 const wearScores = ["1", "2", "3", "4", "U"];
+const read = [];
+const confidence = [];
 
-function Band({ index, handleNavigate, data, setData, styles }) {
+function Band({ index, initialData, handleNavigate, birdDetails, data, setData, styles }) {
   const [form] = Form.useForm();
   const [bandNumber, setBandNumber] = useState(0);
 
-  // Default band detail data
-  const band = {
-    type: "",
-    color: "",
-    engrColor: "",
-    specFeat: "",
-    leg: "",
-    number: "",
-    wearScore: "",
-    read: "",
-    confidence: "",
-  };
-
-  const saveData = () => {
+  const saveData = (data) => {
     const values = form.getFieldsValue();
     let update = [...data];
     update[bandNumber] = values;
@@ -35,7 +24,7 @@ function Band({ index, handleNavigate, data, setData, styles }) {
   }
 
   const switchBand = (n) => {
-    saveData();
+    saveData(data);
     setBandNumber(n);
     form.setFieldsValue(data[n]);
   }
@@ -43,6 +32,33 @@ function Band({ index, handleNavigate, data, setData, styles }) {
   useEffect(() => {
     switchBand(bandNumber);
   }, [])
+
+  const navigate = (bool) => {
+    saveData(data);
+    handleNavigate(bool);
+}
+
+  const generateOptions = (name, label, options) => {
+    return (
+      <Col span={12} style={styles.col}>
+        <div style={styles.text}>{label}</div>
+        <Item
+          name={name}
+          rules={[{ required: true, message: 'Please enter a value!' }]}
+        >
+          <Input value={form.getFieldValue(name)} />
+        </Item>
+
+        <div style={styles.options}>
+          {options.map((item, index) => (
+            <Button key={index} style={styles.button} onClick={() => form.setFieldValue(name, item)}>
+              {item}
+            </Button>
+          ))}
+        </div>
+      </Col>
+    )
+  }
 
   return (
     <div style={styles.container}>
@@ -53,7 +69,7 @@ function Band({ index, handleNavigate, data, setData, styles }) {
       <Form
         form={form}
         name="band"
-        initialValues={{ ...band }}
+        initialValues={{ ...initialData }}
         labelCol={{ xs: 24, sm: 8 }} // Responsive label column
         wrapperCol={{ xs: 24, sm: 24 }} // Responsive wrapper column
         style={styles.form}
@@ -94,95 +110,25 @@ function Band({ index, handleNavigate, data, setData, styles }) {
 
         <div style={styles.botbox}>
           <Row>
-            <Col span={12} style={styles.col}>
-              <div style={styles.text}>Band Type</div>
-              <Item
-                name='type'
-                rules={[{ required: true, message: 'Please enter a value!' }]}
-              >
-                <Input value={form.getFieldValue('type')} />
-              </Item>
+            {
+              generateOptions('type', 'Band Type', bandTypes)
+            }
 
-              <div style={styles.options}>
-                {bandTypes.map((item, index) => (
-                  <Button key={index} style={styles.button} onClick={() => form.setFieldValue('type', item)}>
-                    {item}
-                  </Button>
-                ))}
-              </div>
-            </Col>
+            {
+              generateOptions('color', 'Band Color', bandColors)
+            }
 
-            <Col span={12} style={styles.col}>
-              <div style={styles.text}>Band Color</div>
-              <Item
-                name='color'
-                rules={[{ required: true, message: 'Please enter a value!' }]}
-              >
-                <Input value={form.getFieldValue('color')} />
-              </Item>
+            {
+              generateOptions('engrColor', 'Engr. Color', engravingColors)
+            }
 
-              <div style={styles.options}>
-                {bandColors.map((item, index) => (
-                  <Button key={index} style={styles.button} onClick={() => form.setFieldValue('color', item)}>
-                    {item}
-                  </Button>
-                ))}
-              </div>
-            </Col>
+            {
+              generateOptions('specFeat', 'Spec. Feat', specialFeatures)
+            }
 
-            <Col span={12} style={styles.col}>
-              <div style={styles.text}>Engr. Color</div>
-              <Item
-                name='engrColor'
-                rules={[{ required: true, message: 'Please enter a value!' }]}
-              >
-                <Input value={form.getFieldValue('engrColor')} />
-              </Item>
-
-              <div style={styles.options}>
-                {engravingColors.map((item, index) => (
-                  <Button key={index} style={styles.button} onClick={() => form.setFieldValue('engrColor', item)}>
-                    {item}
-                  </Button>
-                ))}
-              </div>
-            </Col>
-
-            <Col span={12} style={styles.col}>
-              <div style={styles.text}>Spec. Feat</div>
-              <Item
-                name='specFeat'
-                rules={[{ required: true, message: 'Please enter a value!' }]}
-              >
-                <Input value={form.getFieldValue('specFeat')} />
-              </Item>
-
-              <div style={styles.options}>
-                {specialFeatures.map((item, index) => (
-                  <Button key={index} style={styles.button} onClick={() => form.setFieldValue('specFeat', item)}>
-                    {item}
-                  </Button>
-                ))}
-              </div>
-            </Col>
-
-            <Col span={12} style={styles.col}>
-              <div style={styles.text}>Leg (L/R)</div>
-              <Item
-                name='leg'
-                rules={[{ required: true, message: 'Please enter a value!' }]}
-              >
-                <Input value={form.getFieldValue('leg')} />
-              </Item>
-
-              <div style={styles.options}>
-                {legs.map((item, index) => (
-                  <Button key={index} style={styles.button} onClick={() => form.setFieldValue('leg', item)}>
-                    {item}
-                  </Button>
-                ))}
-              </div>
-            </Col>
+            {
+              generateOptions('leg', 'Leg (L/R)', legs)
+            }
 
             <Col span={12} style={styles.col}>
               <div style={styles.text}>Band Number</div>
@@ -194,65 +140,23 @@ function Band({ index, handleNavigate, data, setData, styles }) {
               </Item>
             </Col>
 
-            <Col span={12} style={styles.col}>
-              <div style={styles.text}>Wear Score</div>
-              <Item
-                name='wearScore'
-                rules={[{ required: true, message: 'Please enter a value!' }]}
-              >
-                <Input value={form.getFieldValue('wearScore')} />
-              </Item>
+            {
+              generateOptions('wearScore', 'Wear Score', wearScores)
+            }
 
-              <div style={styles.options}>
-                {wearScores.map((item, index) => (
-                  <Button key={index} style={styles.button} onClick={() => form.setFieldValue('wearScore', item)}>
-                    {item}
-                  </Button>
-                ))}
-              </div>
-            </Col>
+            {
+              generateOptions('read', 'Read', read)
+            }
 
-            <Col span={12} style={styles.col}>
-              <div style={styles.text}>Read</div>
-              <Item
-                name='read'
-                rules={[{ required: true, message: 'Please enter a value!' }]}
-              >
-                <Input value={form.getFieldValue('read')} />
-              </Item>
-
-              <div style={styles.options}>
-                {bandTypes.map((item, index) => (
-                  <Button key={index} style={styles.button} onClick={() => form.setFieldValue('read', item)}>
-                    {item}
-                  </Button>
-                ))}
-              </div>
-            </Col>
-
-            <Col span={12} style={styles.col}>
-              <div style={styles.text}>Confidence</div>
-              <Item
-                name='confidence'
-                rules={[{ required: true, message: 'Please enter a value!' }]}
-              >
-                <Input value={form.getFieldValue('confidence')} />
-              </Item>
-
-              <div style={styles.options}>
-                {bandTypes.map((item, index) => (
-                  <Button key={index} style={styles.button} onClick={() => form.setFieldValue('confidence', item)}>
-                    {item}
-                  </Button>
-                ))}
-              </div>
-            </Col>
+            {
+              generateOptions('confidence', 'Confidence', confidence)
+            }
           </Row>
         </div>
 
         <div>
           <div style={styles.buttonContainer}>
-            <Button onClick={() => handleNavigate(true)} style={{ marginRight: 10, borderColor: 'green', color: 'green' }}>
+            <Button onClick={() => navigate(true)} style={{ marginRight: 10, borderColor: 'green', color: 'green' }}>
               Back to bird details
             </Button>
           </div>
