@@ -42,7 +42,7 @@ const styles = {
 
 
 // Default band detail data
-const band = {
+const initBand = {
     type: "",
     color: "",
     engrColor: "",
@@ -55,13 +55,13 @@ const band = {
 };
 
 // Default bird detail data
-const birdDetail = {
+const initFeeding = {
     species: '',
     time: '',
     loc: '',
     prox: 0,
     birdNotes: '',
-    band: [{...band}, {...band}]
+    band: [{...initBand}, {...initBand}]
 };
 
 function StintData() {
@@ -69,7 +69,7 @@ function StintData() {
     const [form] = Form.useForm();
 
     //default bird details data
-    const [birdDetails, setBirdDetails] = useState([{...birdDetail}]);
+    const [birdDetails, setBirdDetails] = useState([{...initFeeding}]);
 
     // Default stint data
     const [stint, setStint] = useState({
@@ -82,7 +82,7 @@ function StintData() {
         birdDetails: birdDetails,
     });
 
-    const [currentPage, setCurrentPage] = useState(0); //0 is stint, 1 is feeding
+    const [isFeeding, setIsFeeding] = useState(false);
 
     const jsonToCSV = (json) => {
     }
@@ -113,11 +113,7 @@ function StintData() {
         form.setFieldValue(field, time);
     }
 
-    const handleNavigate = (dst) => {
-        setCurrentPage(dst);
-    }
-
-    if (currentPage === 0) {
+    if (!isFeeding) {
         return (
             <div style={styles.container}>
                 <Title level={3} style={{ marginBottom: '20px' }}>
@@ -216,7 +212,7 @@ function StintData() {
                         </div>
 
                         <div style={styles.buttonContainer}>
-                            <Button onClick={() => handleNavigate(1)}>Bird details</Button>
+                            <Button onClick={() => setIsFeeding(true)}>Bird details</Button>
                         </div>
                     </div>
                 </Form>
@@ -226,7 +222,7 @@ function StintData() {
     else {
         return (
             <>
-                <BirdDetails handleNavigate={handleNavigate} birdDetail={birdDetail} initBand={band} data={birdDetails} setData={setBirdDetails} />
+                <BirdDetails setIsFeeding={setIsFeeding} initFeeding={initFeeding} initBand={initBand} data={birdDetails} setData={setBirdDetails} />
             </>
         )
     }

@@ -12,7 +12,7 @@ const wearScores = ["1", "2", "3", "4", "U"];
 const read = [];
 const confidence = [];
 
-function Band({ index, initialData, handleNavigate, birdDetails, data, setData, styles }) {
+function Band({ index, initBand, setIsBand, data, setData, styles }) {
   const [form] = Form.useForm();
   const [bandNumber, setBandNumber] = useState(0);
 
@@ -35,7 +35,7 @@ function Band({ index, initialData, handleNavigate, birdDetails, data, setData, 
 
   const navigate = (bool) => {
     saveData(data);
-    handleNavigate(bool);
+    setIsBand(bool);
 }
 
   const generateOptions = (name, label, options) => {
@@ -69,7 +69,7 @@ function Band({ index, initialData, handleNavigate, birdDetails, data, setData, 
       <Form
         form={form}
         name="band"
-        initialValues={{ ...initialData }}
+        initialValues={{ ...initBand }}
         labelCol={{ xs: 24, sm: 8 }} // Responsive label column
         wrapperCol={{ xs: 24, sm: 24 }} // Responsive wrapper column
         style={styles.form}
@@ -156,7 +156,7 @@ function Band({ index, initialData, handleNavigate, birdDetails, data, setData, 
 
         <div>
           <div style={styles.buttonContainer}>
-            <Button onClick={() => navigate(true)} style={{ marginRight: 10, borderColor: 'green', color: 'green' }}>
+            <Button onClick={() => navigate(false)} style={{ marginRight: 10, borderColor: 'green', color: 'green' }}>
               Back to bird details
             </Button>
           </div>

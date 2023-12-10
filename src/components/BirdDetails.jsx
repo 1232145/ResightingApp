@@ -107,11 +107,10 @@ const styles = {
 const speciesOptions = ["ATPU", "ARTE"];
 const proxOptions = [1, 2, 5, 10, 15];
 
-function BirdDetails({ handleNavigate, data, setData, birdDetail, initBand}) {
+function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand}) {
     const [form] = Form.useForm();
-    const [isBirdDetail, setIsBirdDetail] = useState(true); //true is bird detail, false is band data
+    const [isBand, setIsBand] = useState(false);
     const [index, setIndex] = useState(0);
-    const [band, setBand] = useState([...birdDetail.band]); 
 
     const setCurrentTime = (field) => {
         const currentTime = new Date();
@@ -122,11 +121,23 @@ function BirdDetails({ handleNavigate, data, setData, birdDetail, initBand}) {
         form.setFieldValue(field, time);
     };
 
+    const setBand = (values) => {
+        let updated = [...data];
+        updated[index].band = values;
+        setData(updated);
+    }
+
     const saveData = (data) => {
         const currentData = form.getFieldsValue();
         let updated = [...data];
+
+        //retain band
+        const band = updated[index].band;
+
+        //currentData does not have band
         updated[index] = currentData;
         updated[index].band = band;
+
         setData(updated);
     }
 
@@ -139,7 +150,7 @@ function BirdDetails({ handleNavigate, data, setData, birdDetail, initBand}) {
     const addData = () => {
         //create new added data
         let updated = [...data];
-        updated.push({ ...birdDetail });
+        updated.push({ ...initFeeding });
 
         //save current data
         saveData(updated);
@@ -148,7 +159,7 @@ function BirdDetails({ handleNavigate, data, setData, birdDetail, initBand}) {
         setIndex(updated.length - 1);
 
         //reset inputs
-        form.setFieldsValue({ ...birdDetail });
+        form.setFieldsValue({ ...initFeeding });
     }
 
     const removeData = () => {
@@ -164,25 +175,27 @@ function BirdDetails({ handleNavigate, data, setData, birdDetail, initBand}) {
     }
 
     const removeAll = () => {
-        setData([{ ...birdDetail }]);
+        setData([{ ...initFeeding }]);
         setIndex(0);
         form.setFieldsValue(data[0]);
     }
 
-    const navigate = (idx) => {
+    const navigate = (dst) => {
         saveData(data);
-        handleNavigate(idx);
+
+        if (dst === "stint") {
+            setIsFeeding(false);
+        }
+        else {
+            setIsBand(true);
+        }
     }
 
     useEffect(() => {
         switchData(index);
     }, [])
 
-    useEffect(() => {
-        setBand(data[index].band);
-    }, [data])
-
-    if (isBirdDetail) {
+    if (!isBand) {
         return (
             <div style={styles.container}>
                 <Title level={3} style={{ marginBottom: '20px' }}>
@@ -192,7 +205,7 @@ function BirdDetails({ handleNavigate, data, setData, birdDetail, initBand}) {
                 <Form
                     form={form}
                     name="birdDetails"
-                    initialValues={{ ...birdDetail }}
+                    initialValues={{ ...initFeeding }}
                     labelCol={{ xs: 24, sm: 8 }} // Responsive label column
                     wrapperCol={{ xs: 24, sm: 24 }} // Responsive wrapper column
                     style={styles.form}
@@ -298,17 +311,17 @@ function BirdDetails({ handleNavigate, data, setData, birdDetail, initBand}) {
 
                     <div>
                         <div style={{ ...styles.botbox, justifyContent: 'flex-start' }}>
-                            <Button danger style={{ margin: 5 }} onClick={() => form.setFieldsValue({ ...birdDetail })}>Clear all</Button>
+                            <Button danger style={{ margin: 5 }} onClick={() => form.setFieldsValue({ ...initFeeding })}>Clear all</Button>
                             <Button danger style={{ margin: 5 }} onClick={() => removeAll()}>Delete all</Button>
                         </div>
                     </div>
 
                     <div>
                         <div style={styles.buttonContainer}>
-                            <Button onClick={() => navigate(0)} style={{ marginRight: 10, borderColor: 'green', color: 'green' }}>
+                            <Button onClick={() => navigate("stint")} style={{ marginRight: 10, borderColor: 'green', color: 'green' }}>
                                 Back to Stint
                             </Button>
-                            <Button onClick={() => setIsBirdDetail(false)}>
+                            <Button onClick={() => navigate("band")}>
                                 Band details
                             </Button>
                         </div>
@@ -320,7 +333,7 @@ function BirdDetails({ handleNavigate, data, setData, birdDetail, initBand}) {
     else {
         return (
             <>
-                <Band index={index} initialData={initBand} handleNavigate={setIsBirdDetail} birdDetails={data} data={band} setData={setBand} styles={styles} />
+                <Band index={index} initBand={initBand} setIsBand={setIsBand} data={data[index].band} setData={setBand} styles={styles} />
             </>
         )
     }
