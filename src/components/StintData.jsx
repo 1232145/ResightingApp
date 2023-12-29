@@ -92,13 +92,15 @@ function StintData() {
 
     const handleSave = () => {
         let csv = '';
-        const data = stint;
+        const data = {...form.getFieldsValue(), birdDetails: birdDetails};
 
         csv += jsonToCSV(data);
 
-        const file = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+        console.log(data);
 
-        saveAs(file, 'data.csv');
+        // const file = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+
+        // saveAs(file, 'data.csv');
     }
 
     const setCurrentTime = (field) => {
