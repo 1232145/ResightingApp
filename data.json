@@ -1,0 +1,72 @@
+{
+    "islandAlpha": "",
+    "year": 0,
+    "location": "",
+    "timeStart": "",
+    "timeEnd": "",
+    "date": "",
+    "birdDetails": [
+        {
+            "species": "",
+            "time": "",
+            "loc": "",
+            "prox": 0,
+            "birdNotes": "",
+            "band": [
+                {
+                    "type": "",
+                    "color": "",
+                    "engrColor": "",
+                    "specFeat": "",
+                    "leg": "",
+                    "number": "",
+                    "wearScore": "",
+                    "read": "",
+                    "confidence": ""
+                },
+                {
+                    "type": "",
+                    "color": "",
+                    "engrColor": "",
+                    "specFeat": "",
+                    "leg": "",
+                    "number": "",
+                    "wearScore": "",
+                    "read": "",
+                    "confidence": ""
+                }
+            ]
+        },
+        {
+            "species": "",
+            "time": "",
+            "loc": "",
+            "prox": 0,
+            "birdNotes": "",
+            "band": [
+                {
+                    "type": "",
+                    "color": "",
+                    "engrColor": "",
+                    "specFeat": "",
+                    "leg": "",
+                    "number": "",
+                    "wearScore": "",
+                    "read": "",
+                    "confidence": ""
+                },
+                {
+                    "type": "",
+                    "color": "",
+                    "engrColor": "",
+                    "specFeat": "",
+                    "leg": "",
+                    "number": "",
+                    "wearScore": "",
+                    "read": "",
+                    "confidence": ""
+                }
+            ]
+        }
+    ]
+}

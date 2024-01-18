@@ -290,6 +290,15 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand}) {
                                 </div>
                             </Col>
                             <Col span={12} style={styles.col}>
+                                <div style={styles.text}>Loc</div>
+                                <Item
+                                    name='loc'
+                                    rules={[{ required: true, message: 'Please enter a value!' }]}
+                                >
+                                    <Input value={form.getFieldValue('loc')} />
+                                </Item>
+                            </Col>
+                            <Col span={12} style={styles.col}>
                                 <div style={styles.text}>Prox</div>
                                 <Item
                                     name='prox'

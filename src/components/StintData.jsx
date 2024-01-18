@@ -61,7 +61,7 @@ const initFeeding = {
     loc: '',
     prox: 0,
     birdNotes: '',
-    band: [{...initBand}, {...initBand}]
+    band: [{ ...initBand }, { ...initBand }]
 };
 
 function StintData() {
@@ -69,22 +69,44 @@ function StintData() {
     const [form] = Form.useForm();
 
     //default bird details data
-    const [birdDetails, setBirdDetails] = useState([{...initFeeding}]);
+    const [birdDetails, setBirdDetails] = useState([{ ...initFeeding }]);
 
     // Default stint data
     const [stint, setStint] = useState({
-        islandAlpha: '',
+        obsInit: '',
         year: new Date().getYear(),
         location: '',
         timeStart: '',
         timeEnd: '',
         date: '',
+        stintNotes: '',
         birdDetails: birdDetails,
     });
 
     const [isFeeding, setIsFeeding] = useState(false);
 
     const jsonToCSV = (json) => {
+
+        const headers = [
+            'Obs Init, Location (Blind), Time Start, Time End, Date (mm/dd/yy), Stint Notes, Species (Alpha), Time, Loc, Prox (m), Bird Notes, Band Type, Band Color, Engr. Color, Spec. Feat, Leg (L/R), Band Number, Band Wear Present (Y/N) /Wear Score, Read, Confidence, Band Type, Band Color, Engr. Color, Spec. Feat, Leg (L/R), Band Number, Band Wear Present (Y/N) /Wear Score, Confidence, Read'
+        ];
+
+        const csvRows = [headers.join(',')];
+
+        json.birdDetails.forEach(feeding => {
+            const { band } = feeding;
+            
+            const row = [
+                json.obsInit, json.location, json.timeStart, json.timeEnd, json.date, json.stintNotes,
+                feeding.species, feeding.time, feeding.loc, feeding.prox, feeding.birdNotes,
+                band[0].type, band[0].color, band[0].engrColor, band[0].specFeat, band[0].leg, band[0].number, band[0].wearScore, band[0].read, band[0].confidence,
+                band[1].type, band[1].color, band[1].engrColor, band[1].specFeat, band[1].leg, band[1].number, band[1].wearScore, band[1].read, band[1].confidence
+            ]
+
+              csvRows.push(row.join(', ')); 
+        });
+
+        return csvRows.join('\n');
     }
 
     function csvToJson(csv) {
@@ -92,15 +114,15 @@ function StintData() {
 
     const handleSave = () => {
         let csv = '';
-        const data = {...form.getFieldsValue(), birdDetails: birdDetails};
+        const data = { ...form.getFieldsValue(), birdDetails: birdDetails };
 
         csv += jsonToCSV(data);
 
-        console.log(data);
+        console.log(csv);
 
-        // const file = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+        const file = new Blob([csv], { type: 'text/csv;charset=utf-8' });
 
-        // saveAs(file, 'data.csv');
+        saveAs(file, `${data.timeStart}-${data.timeEnd}-${data.date}-${data.obsInit}-${data.location}.csv`);
     }
 
     const setCurrentTime = (field) => {
@@ -133,9 +155,9 @@ function StintData() {
                     <Row gutter={24}>
                         <Col span={12} xs={24} sm={12} md={12} lg={12} xl={12}>
                             <Item
-                                label="Island Alpha"
-                                name="islandAlpha"
-                                rules={[{ required: true, message: 'Please enter Island Alpha!' }]}
+                                label="Observation Init"
+                                name="obsInit"
+                                rules={[{ required: true, message: 'Please enter a value!' }]}
                             >
                                 <Input style={styles.input} size="small" />
                             </Item>
@@ -166,7 +188,7 @@ function StintData() {
                                     labelCol={{ xs: 24, sm: 8, md: 8, lg: 8, xl: 8 }} // Responsive label column
                                     wrapperCol={{ xs: 24, sm: 16 }} // Responsive wrapper column
                                 >
-                                    <Input value={form.getFieldValue('timeStart')} disabled />
+                                    <Input value={form.getFieldValue('timeStart')} />
                                 </Item>
 
                                 <Button onClick={() => setCurrentTime("timeStart")} size="small" style={styles.timeButton}>
