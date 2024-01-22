@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { saveAs } from 'file-saver';
-import { Form, Input, Button, DatePicker, InputNumber, Row, Col, Typography } from 'antd';
+import { Form, Input, Button, DatePicker, Row, Col, Typography, Upload, message } from 'antd';
 import BirdDetails from './BirdDetails';
 
 const { Item } = Form;
@@ -52,6 +52,7 @@ const initBand = {
     wearScore: "",
     read: "",
     confidence: "",
+    // note: ""
 };
 
 // Default bird detail data
@@ -74,7 +75,6 @@ function StintData() {
     // Default stint data
     const [stint, setStint] = useState({
         obsInit: '',
-        year: new Date().getYear(),
         location: '',
         timeStart: '',
         timeEnd: '',
@@ -95,7 +95,7 @@ function StintData() {
 
         json.birdDetails.forEach(feeding => {
             const { band } = feeding;
-            
+
             const row = [
                 json.obsInit, json.location, json.timeStart, json.timeEnd, json.date, json.stintNotes,
                 feeding.species, feeding.time, feeding.loc, feeding.prox, feeding.birdNotes,
@@ -103,26 +103,113 @@ function StintData() {
                 band[1].type, band[1].color, band[1].engrColor, band[1].specFeat, band[1].leg, band[1].number, band[1].wearScore, band[1].read, band[1].confidence
             ]
 
-              csvRows.push(row.join(', ')); 
+            csvRows.push(row.join(', '));
         });
 
         return csvRows.join('\n');
     }
 
     function csvToJson(csv) {
+        const rows = csv.split('\n').map(row => row.split(','));
+
+        if (rows.length < 2) {
+            return;
+        }
+
+        const feedingData = rows.slice(1).reduce((acc, row) => {
+
+            const data =
+            {
+                species: row[6],
+                time: row[7],
+                loc: row[8],
+                prox: row[9],
+                birdNotes: row[10],
+                band: [{
+                    type: row[11],
+                    color: row[12],
+                    engrColor: row[13],
+                    specFeat: row[14],
+                    leg: row[15],
+                    number: row[16],
+                    wearScore: row[17],
+                    read: row[18],
+                    confidence: row[19],
+                }, {
+                    type: row[20],
+                    color: row[21],
+                    engrColor: row[22],
+                    specFeat: row[23],
+                    leg: row[24],
+                    number: row[25],
+                    wearScore: row[26],
+                    read: row[27],
+                    confidence: row[28],
+                }]
+            };
+
+            acc.push(data);
+
+            return acc;
+
+        }, []);
+
+        const stintData = rows[1];
+
+        const jsonData = {
+            obsInit: stintData[0],
+            location: stintData[1],
+            timeStart: stintData[2],
+            timeEnd: stintData[3],
+            date: stintData[4],
+            stintNotes: stintData[5],
+            birdDetails: feedingData,
+        };
+
+        return jsonData;
     }
 
     const handleSave = () => {
         let csv = '';
-        const data = { ...form.getFieldsValue(), birdDetails: birdDetails };
+        let data = { ...form.getFieldsValue(), birdDetails: birdDetails };
+        data.date = formatDate(data.date);
 
         csv += jsonToCSV(data);
-
-        console.log(csv);
 
         const file = new Blob([csv], { type: 'text/csv;charset=utf-8' });
 
         saveAs(file, `${data.timeStart}-${data.timeEnd}-${data.date}-${data.obsInit}-${data.location}.csv`);
+    }
+
+    const formatDate = (dateStr) => {
+        const date = new Date(dateStr);
+
+        return (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
+    }
+
+    const handleFileUpload = (info) => {
+        // const file = event.target.files[0];
+        const file = info.file;
+
+        if (!file) return;
+
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+            const csv = e.target.result;
+            let stint = csvToJson(csv);
+
+            setBirdDetails(stint.birdDetails);
+            // stint.date = new Date(2023, 6, 20);
+
+            form.setFieldsValue(stint);
+        };
+
+        reader.onerror = () => {
+            alert('Error reading the CSV file.');
+        };
+
+        reader.readAsText(file);
     }
 
     const setCurrentTime = (field) => {
@@ -136,6 +223,43 @@ function StintData() {
 
         form.setFieldValue(field, time);
     }
+
+    // When users accidentally close the app, ask for confirmation
+    useEffect(() => {
+        handleOpenFromLocalStorage();
+
+        const handleBeforeUnload = (e) => {
+            e.preventDefault();
+            e.returnValue = '';
+
+            // Display a confirmation dialog to the user
+            const confirmationMessage = 'Are you sure you want to leave this page?';
+            e.returnValue = window.confirm(confirmationMessage) ? undefined : '';
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, []);
+
+    /**
+     * Handles opening data from localStorage
+     */
+    const handleOpenFromLocalStorage = () => {
+        const backupData = localStorage.getItem('backup');
+
+
+        // if local storage not null
+        if (backupData != null) {
+            // Parse the JSON data from localStorage
+
+            const jsonData = JSON.parse(backupData);
+
+            setStint(jsonData);
+        }
+    };
 
     if (!isFeeding) {
         return (
@@ -160,14 +284,6 @@ function StintData() {
                                 rules={[{ required: true, message: 'Please enter a value!' }]}
                             >
                                 <Input style={styles.input} size="small" />
-                            </Item>
-
-                            <Item
-                                label="Year"
-                                name="year"
-                                rules={[{ type: 'number', min: 0, required: true, message: 'Please enter Year!' }]}
-                            >
-                                <InputNumber style={styles.input} size="small" />
                             </Item>
 
                             <Item
@@ -230,9 +346,20 @@ function StintData() {
                             <Button type="primary" htmlType="submit" style={{ marginRight: '10px' }}>
                                 Save
                             </Button>
-                            <Button type="primary" htmlType="submit">
-                                Import
-                            </Button>
+                            <Upload
+                                style={{ maxWidth: '25px' }}
+                                customRequest={handleFileUpload}
+                                accept=".csv"
+                                beforeUpload={file => {
+                                    if (file.type !== "text/csv") {
+                                        message.error(`${file.name} is not a csv file`);
+                                        return Upload.LIST_IGNORE;
+                                    }
+                                    return true;
+                                }}
+                            >
+                                <Button type="primary">Import</Button>
+                            </Upload>
                         </div>
 
                         <div style={styles.buttonContainer}>
@@ -253,3 +380,5 @@ function StintData() {
 }
 
 export default StintData;
+
+//TODO: Date error

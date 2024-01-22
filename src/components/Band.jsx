@@ -75,13 +75,13 @@ function Band({ index, initBand, setIsBand, data, setData, styles }) {
         style={styles.form}
       >
         <div style={styles.topbox}>
-          <div style={styles.leftTop}>
+          {/* <div style={styles.leftTop}> */}
 
 
-            <Item name='note' label='Notes'>
+            {/* <Item name='note' label='Notes'>
               <Input.TextArea rows={5} style={styles.text} />
-            </Item>
-          </div>
+            </Item> */}
+          {/* </div> */}
 
           <div style={styles.rightTop}>
             <div>Select band number:</div>
