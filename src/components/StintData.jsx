@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { saveAs } from 'file-saver';
-import { Form, Input, Button, DatePicker, Row, Col, Typography, Upload, message } from 'antd';
+import { Form, Input, Button, DatePicker, Row, Col, Typography, Upload, message, Modal } from 'antd';
 import BirdDetails from './BirdDetails';
 
 const { Item } = Form;
@@ -84,6 +84,7 @@ function StintData() {
     });
 
     const [isFeeding, setIsFeeding] = useState(false);
+    const [isModalVisible, setIsModalVisible] = useState(false); //exit confirmation
 
     const jsonToCSV = (json) => {
 
@@ -229,12 +230,9 @@ function StintData() {
         handleOpenFromLocalStorage();
 
         const handleBeforeUnload = (e) => {
-            e.preventDefault();
-            e.returnValue = '';
-
-            // Display a confirmation dialog to the user
-            const confirmationMessage = 'Are you sure you want to leave this page?';
-            e.returnValue = window.confirm(confirmationMessage) ? undefined : '';
+            // e.preventDefault();
+            // e.returnValue = "Are you sure you want to exit?";
+            setIsModalVisible(true);
         };
 
         window.addEventListener('beforeunload', handleBeforeUnload);
@@ -260,6 +258,28 @@ function StintData() {
             setStint(jsonData);
         }
     };
+
+    if (isModalVisible) {
+        return (
+            <Modal
+                title="Confirm Exit"
+                open={isModalVisible}
+                onOk={
+                    () => {
+                        console.log("Close");
+                    }}
+                onCancel={
+                    () => {
+                        setIsModalVisible(false);
+                    }
+                }
+                okText="Yes, Leave Page"
+                cancelText="No, Stay"
+            >
+                Are you sure you want to leave this page?
+            </Modal>
+        )
+    }
 
     if (!isFeeding) {
         return (
