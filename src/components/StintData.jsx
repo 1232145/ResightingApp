@@ -200,7 +200,7 @@ function StintData() {
             let stint = csvToJson(csv);
 
             setBirdDetails(stint.birdDetails);
-            // stint.date = new Date(2023, 6, 20);
+            stint.date = null;
 
             form.setFieldsValue(stint);
         };
