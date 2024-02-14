@@ -11,7 +11,7 @@ function createWindow() {
     },
   });
 
-  win.webContents.openDevTools();
+  // win.webContents.openDevTools();
 
   win.loadFile(
     `${path.join(__dirname, '../build/index.html')}`
