@@ -14,8 +14,9 @@ const confidence = [];
 
 function Band({ index, initBand, setIsBand, data, setData, styles }) {
   const [form] = Form.useForm();
-  const [bandNumber, setBandNumber] = useState(0);
+  const [bandNumber, setBandNumber] = useState(0); //band number (only 0 and 1)
 
+  //function to save band data
   const saveData = (data) => {
     const values = form.getFieldsValue();
     let update = [...data];
@@ -23,6 +24,7 @@ function Band({ index, initBand, setIsBand, data, setData, styles }) {
     setData(update);
   }
 
+  //function to switch between band
   const switchBand = (n) => {
     saveData(data);
     setBandNumber(n);
@@ -33,11 +35,13 @@ function Band({ index, initBand, setIsBand, data, setData, styles }) {
     switchBand(bandNumber);
   }, [])
 
+  //navigate to feeding tab and save current band data
   const navigate = (bool) => {
     saveData(data);
     setIsBand(bool);
 }
 
+  //function to generate button template
   const generateOptions = (name, label, options) => {
     return (
       <Col span={12} style={styles.col}>

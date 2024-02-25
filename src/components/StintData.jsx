@@ -83,9 +83,10 @@ function StintData() {
         birdDetails: birdDetails,
     });
 
-    const [isFeeding, setIsFeeding] = useState(false);
+    const [isFeeding, setIsFeeding] = useState(false); //toggle between stint and feeding
     const [isModalVisible, setIsModalVisible] = useState(false); //exit confirmation
 
+    //convert json to csv file
     const jsonToCSV = (json) => {
 
         const headers = [
@@ -110,6 +111,7 @@ function StintData() {
         return csvRows.join('\n');
     }
 
+    //convert csv to json file
     function csvToJson(csv) {
         const rows = csv.split('\n').map(row => row.split(','));
 
@@ -170,6 +172,7 @@ function StintData() {
         return jsonData;
     }
 
+    //handle save data to csv file button
     const handleSave = () => {
         let csv = '';
         let data = { ...form.getFieldsValue(), birdDetails: birdDetails };
@@ -182,12 +185,14 @@ function StintData() {
         saveAs(file, `${data.timeStart}-${data.timeEnd}-${data.date}-${data.obsInit}-${data.location}.csv`);
     }
 
+    //function to format date
     const formatDate = (dateStr) => {
         const date = new Date(dateStr);
 
         return (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
     }
 
+    //handle import csv file to this tablet
     const handleFileUpload = (info) => {
         // const file = event.target.files[0];
         const file = info.file;
@@ -213,6 +218,7 @@ function StintData() {
         reader.readAsText(file);
     }
 
+    //handle set current time button
     const setCurrentTime = (field) => {
         const currentTime = new Date();
         // const year = currentTime.getFullYear();
@@ -259,6 +265,7 @@ function StintData() {
         }
     };
 
+    //confirm exit button
     if (isModalVisible) {
         return (
             <Modal

@@ -109,9 +109,10 @@ const proxOptions = [1, 2, 5, 10, 15];
 
 function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand}) {
     const [form] = Form.useForm();
-    const [isBand, setIsBand] = useState(false);
-    const [index, setIndex] = useState(0);
+    const [isBand, setIsBand] = useState(false); //toggle between feeding and band tab
+    const [index, setIndex] = useState(0); //feeding index
 
+    //handle time stamp
     const setCurrentTime = (field) => {
         const currentTime = new Date();
         const hours = currentTime.getHours().toString().padStart(2, '0');
@@ -121,12 +122,14 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand}) {
         form.setFieldValue(field, time);
     };
 
+    //function to set the band value of this feeding
     const setBand = (values) => {
         let updated = [...data];
         updated[index].band = values;
         setData(updated);
     }
 
+    //function to auto save the feeding values
     const saveData = (data) => {
         const currentData = form.getFieldsValue();
         let updated = [...data];
@@ -141,12 +144,14 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand}) {
         setData(updated);
     }
 
+    //function to switch between feeding tab
     const switchData = (idx) => {
         saveData(data);
         setIndex(idx);
         form.setFieldsValue(data[idx]);
     }
 
+    //function to add feeding tab
     const addData = () => {
         //create new added data
         let updated = [...data];
@@ -162,6 +167,7 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand}) {
         form.setFieldsValue({ ...initFeeding });
     }
 
+    //function to remove feeding tab
     const removeData = () => {
         if (data.length > 1) {
             //remove data
@@ -174,12 +180,14 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand}) {
         }
     }
 
+    //function to remove all feeding tab
     const removeAll = () => {
         setData([{ ...initFeeding }]);
         setIndex(0);
         form.setFieldsValue(data[0]);
     }
 
+    //function to navigate to stint or band tab
     const navigate = (dst) => {
         saveData(data);
 
@@ -191,6 +199,7 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand}) {
         }
     }
 
+    //when first load, switch to the feeding tab number index
     useEffect(() => {
         switchData(index);
     }, [])
