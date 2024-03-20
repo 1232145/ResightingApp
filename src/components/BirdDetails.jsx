@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, InputNumber, Typography, Row, Col } from 'antd';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons'; // Import icons
 import Band from './Band';
+import { generateLabelInfo } from './InfoBox';
 
 const { Item } = Form;
 const { Title } = Typography;
@@ -81,6 +82,14 @@ const styles = {
         width: '100%',
         height: '50px',
         fontSize: '16px',
+        backgroundColor: '#EFEFEF'
+    },
+
+    label: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        margin: '0px'
     },
 
     dataButton: {
@@ -107,7 +116,7 @@ const styles = {
 const speciesOptions = ["ATPU", "ARTE"];
 const proxOptions = [1, 2, 5, 10, 15];
 
-function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand}) {
+function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand }) {
     const [form] = Form.useForm();
     const [isBand, setIsBand] = useState(false); //toggle between feeding and band tab
     const [index, setIndex] = useState(0); //feeding index
@@ -282,7 +291,9 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand}) {
                     <div style={styles.botbox}>
                         <Row>
                             <Col span={12} style={styles.col}>
-                                <div style={styles.text}>Species</div>
+                                {
+                                    generateLabelInfo('Species', 'Info', styles)
+                                }
                                 <Item
                                     name="species"
                                     rules={[{ required: true, message: 'Please enter species!' }]}
@@ -299,7 +310,9 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand}) {
                                 </div>
                             </Col>
                             <Col span={12} style={styles.col}>
-                                <div style={styles.text}>Loc</div>
+                                {
+                                    generateLabelInfo('Loc', 'Info', styles)
+                                }
                                 <Item
                                     name='loc'
                                     rules={[{ required: true, message: 'Please enter a value!' }]}
@@ -308,12 +321,14 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand}) {
                                 </Item>
                             </Col>
                             <Col span={12} style={styles.col}>
-                                <div style={styles.text}>Prox</div>
+                                {
+                                    generateLabelInfo('Prox', 'Info', styles)
+                                }
                                 <Item
                                     name='prox'
                                     rules={[{ required: true, message: 'Please enter species!' }]}
                                 >
-                                    <InputNumber value={form.getFieldValue('prox')} />
+                                    <InputNumber value={form.getFieldValue('prox')} style={{width: '100%'}}/>
                                 </Item>
 
                                 <div style={styles.options}>

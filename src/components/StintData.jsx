@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { saveAs } from 'file-saver';
 import { Form, Input, Button, DatePicker, Row, Col, Typography, Upload, message, Modal } from 'antd';
 import BirdDetails from './BirdDetails';
+import moment from 'moment';
 
 const { Item } = Form;
 const { Title } = Typography;
@@ -114,15 +115,16 @@ function StintData() {
     //convert csv to json file
     function csvToJson(csv) {
         const rows = csv.split('\n').map(row => row.split(','));
-
+    
         if (rows.length < 2) {
             return;
         }
-
-        const feedingData = rows.slice(1).reduce((acc, row) => {
-
-            const data =
-            {
+    
+        // Trim all elements of each row
+        const trimmedRows = rows.map(row => row.map(cell => cell.trim()));
+    
+        const feedingData = trimmedRows.slice(1).reduce((acc, row) => {
+            const data = {
                 species: row[6],
                 time: row[7],
                 loc: row[8],
@@ -150,15 +152,14 @@ function StintData() {
                     confidence: row[28],
                 }]
             };
-
+    
             acc.push(data);
-
+    
             return acc;
-
         }, []);
-
-        const stintData = rows[1];
-
+    
+        const stintData = trimmedRows[1];
+    
         const jsonData = {
             obsInit: stintData[0],
             location: stintData[1],
@@ -168,9 +169,9 @@ function StintData() {
             stintNotes: stintData[5],
             birdDetails: feedingData,
         };
-
+    
         return jsonData;
-    }
+    }    
 
     //handle save data to csv file button
     const handleSave = () => {
@@ -183,6 +184,8 @@ function StintData() {
         const file = new Blob([csv], { type: 'text/csv;charset=utf-8' });
 
         saveAs(file, `${data.timeStart}-${data.timeEnd}-${data.date}-${data.obsInit}-${data.location}.csv`);
+        
+        message.success("Dowloaded Successfully!");
     }
 
     //function to format date
@@ -203,16 +206,19 @@ function StintData() {
 
         reader.onload = (e) => {
             const csv = e.target.result;
-            let stint = csvToJson(csv);
+            let data = csvToJson(csv);
 
-            setBirdDetails(stint.birdDetails);
-            stint.date = null;
+            setBirdDetails(data.birdDetails);
 
-            form.setFieldsValue(stint);
+            data.date = moment(data.date, 'MM/DD/YYYY');
+
+            form.setFieldsValue(data);
+            message.success("Uploaded Successfully!");
         };
 
         reader.onerror = () => {
             alert('Error reading the CSV file.');
+            message.success("Upload Failed!");
         };
 
         reader.readAsText(file);
@@ -286,6 +292,10 @@ function StintData() {
                 Are you sure you want to leave this page?
             </Modal>
         )
+    }
+
+    const handlePreview = () => {
+
     }
 
     if (!isFeeding) {
@@ -377,6 +387,7 @@ function StintData() {
                                 style={{ maxWidth: '25px' }}
                                 customRequest={handleFileUpload}
                                 accept=".csv"
+                                showUploadList={false}
                                 beforeUpload={file => {
                                     if (file.type !== "text/csv") {
                                         message.error(`${file.name} is not a csv file`);
@@ -391,6 +402,9 @@ function StintData() {
 
                         <div style={styles.buttonContainer}>
                             <Button onClick={() => setIsFeeding(true)}>Bird details</Button>
+                            <Button onClick={() => handlePreview()} type="primary" style={{ marginLeft: '10px', backgroundColor: 'green' }}>
+                                Preview
+                            </Button>
                         </div>
                     </div>
                 </Form>
@@ -408,4 +422,7 @@ function StintData() {
 
 export default StintData;
 
-//TODO: Date error
+//TODO: 
+//Show data
+//Auto timer
+//Closed feeding

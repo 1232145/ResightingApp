@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Typography, Row, Col } from 'antd';
+import { generateLabelInfo } from './InfoBox';
 
 const { Item } = Form;
 const { Title } = Typography;
@@ -39,13 +40,15 @@ function Band({ index, initBand, setIsBand, data, setData, styles }) {
   const navigate = (bool) => {
     saveData(data);
     setIsBand(bool);
-}
+  }
 
   //function to generate button template
   const generateOptions = (name, label, options) => {
     return (
       <Col span={12} style={styles.col}>
-        <div style={styles.text}>{label}</div>
+        {
+          generateLabelInfo(label, "Info to add", styles)
+        }
         <Item
           name={name}
           rules={[{ required: true, message: 'Please enter a value!' }]}
@@ -80,9 +83,7 @@ function Band({ index, initBand, setIsBand, data, setData, styles }) {
       >
         <div style={styles.topbox}>
           {/* <div style={styles.leftTop}> */}
-
-
-            {/* <Item name='note' label='Notes'>
+          {/* <Item name='note' label='Notes'>
               <Input.TextArea rows={5} style={styles.text} />
             </Item> */}
           {/* </div> */}
@@ -135,7 +136,9 @@ function Band({ index, initBand, setIsBand, data, setData, styles }) {
             }
 
             <Col span={12} style={styles.col}>
-              <div style={styles.text}>Band Number</div>
+              {
+                generateLabelInfo("Band Number", "Info to add", styles)
+              }
               <Item
                 name='number'
                 rules={[{ required: true, message: 'Please enter a value!' }]}
