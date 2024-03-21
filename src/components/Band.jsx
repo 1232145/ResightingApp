@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Typography, Row, Col } from 'antd';
 import { generateLabelInfo } from './InfoBox';
+import { generateOptions } from './Option';
 
 const { Item } = Form;
 const { Title } = Typography;
+
+//TODO: Divide each options button into seperate component
 const bandTypes = ["CC", "BC", "PFR", "NRM", "BBL", "RMFR"];
 const bandColors = ["M", "W", "BLK", "Y", "BLU", "BRW", "R", "G", "LG", "BrB", "ObO", "Or"];
 const engravingColors = ["M", "W", "BLK", "BLU", "BRW", "None", "R", "Y"];
@@ -43,25 +46,23 @@ function Band({ index, initBand, setIsBand, data, setData, styles }) {
   }
 
   //function to generate button template
-  const generateOptions = (name, label, options) => {
+  const generateTemplate = (field, label, options) => {
     return (
       <Col span={12} style={styles.col}>
         {
           generateLabelInfo(label, "Info to add", styles)
         }
         <Item
-          name={name}
+          name={field}
           rules={[{ required: true, message: 'Please enter a value!' }]}
         >
-          <Input value={form.getFieldValue(name)} />
+          <Input value={form.getFieldValue(field)} />
         </Item>
 
         <div style={styles.options}>
-          {options.map((item, index) => (
-            <Button key={index} style={styles.button} onClick={() => form.setFieldValue(name, item)}>
-              {item}
-            </Button>
-          ))}
+          {
+            generateOptions(options, form, field)
+          }
         </div>
       </Col>
     )
@@ -116,23 +117,23 @@ function Band({ index, initBand, setIsBand, data, setData, styles }) {
         <div style={styles.botbox}>
           <Row>
             {
-              generateOptions('type', 'Band Type', bandTypes)
+              generateTemplate('type', 'Band Type', bandTypes)
             }
 
             {
-              generateOptions('color', 'Band Color', bandColors)
+              generateTemplate('color', 'Band Color', bandColors)
             }
 
             {
-              generateOptions('engrColor', 'Engr. Color', engravingColors)
+              generateTemplate('engrColor', 'Engr. Color', engravingColors)
             }
 
             {
-              generateOptions('specFeat', 'Spec. Feat', specialFeatures)
+              generateTemplate('specFeat', 'Spec. Feat', specialFeatures)
             }
 
             {
-              generateOptions('leg', 'Leg (L/R)', legs)
+              generateTemplate('leg', 'Leg (L/R)', legs)
             }
 
             <Col span={12} style={styles.col}>
@@ -148,15 +149,15 @@ function Band({ index, initBand, setIsBand, data, setData, styles }) {
             </Col>
 
             {
-              generateOptions('wearScore', 'Wear Score', wearScores)
+              generateTemplate('wearScore', 'Wear Score', wearScores)
             }
 
             {
-              generateOptions('read', 'Read', read)
+              generateTemplate('read', 'Read', read)
             }
 
             {
-              generateOptions('confidence', 'Confidence', confidence)
+              generateTemplate('confidence', 'Confidence', confidence)
             }
           </Row>
         </div>

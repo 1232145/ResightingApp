@@ -218,7 +218,7 @@ function StintData() {
 
         reader.onerror = () => {
             alert('Error reading the CSV file.');
-            message.success("Upload Failed!");
+            message.error("Upload Failed!");
         };
 
         reader.readAsText(file);
@@ -426,3 +426,4 @@ export default StintData;
 //Show data
 //Auto timer
 //Closed feeding
+//Highlight selected button

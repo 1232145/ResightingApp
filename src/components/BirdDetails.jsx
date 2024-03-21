@@ -3,6 +3,7 @@ import { Form, Input, Button, InputNumber, Typography, Row, Col } from 'antd';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons'; // Import icons
 import Band from './Band';
 import { generateLabelInfo } from './InfoBox';
+import { generateOptions } from './Option'
 
 const { Item } = Form;
 const { Title } = Typography;
@@ -82,7 +83,7 @@ const styles = {
         width: '100%',
         height: '50px',
         fontSize: '16px',
-        backgroundColor: '#EFEFEF'
+        backgroundColor: '#EFEFEF',
     },
 
     label: {
@@ -302,11 +303,9 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand }) {
                                 </Item>
 
                                 <div style={styles.options}>
-                                    {speciesOptions.map((item, index) => (
-                                        <Button key={index} style={styles.button} onClick={() => form.setFieldValue('species', item)}>
-                                            {item}
-                                        </Button>
-                                    ))}
+                                    {
+                                        generateOptions(speciesOptions, form, 'species')
+                                    }
                                 </div>
                             </Col>
                             <Col span={12} style={styles.col}>
@@ -328,15 +327,13 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand }) {
                                     name='prox'
                                     rules={[{ required: true, message: 'Please enter species!' }]}
                                 >
-                                    <InputNumber value={form.getFieldValue('prox')} style={{width: '100%'}}/>
+                                    <InputNumber value={form.getFieldValue('prox')} style={{ width: '100%' }} />
                                 </Item>
 
                                 <div style={styles.options}>
-                                    {proxOptions.map((item, index) => (
-                                        <Button key={index} style={styles.button} onClick={() => form.setFieldValue('prox', item)}>
-                                            {item}
-                                        </Button>
-                                    ))}
+                                    {
+                                        generateOptions(proxOptions, form, 'prox')
+                                    }
                                 </div>
                             </Col>
                         </Row>
