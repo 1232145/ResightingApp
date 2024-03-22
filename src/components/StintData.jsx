@@ -115,14 +115,14 @@ function StintData() {
     //convert csv to json file
     function csvToJson(csv) {
         const rows = csv.split('\n').map(row => row.split(','));
-    
+
         if (rows.length < 2) {
             return;
         }
-    
+
         // Trim all elements of each row
         const trimmedRows = rows.map(row => row.map(cell => cell.trim()));
-    
+
         const feedingData = trimmedRows.slice(1).reduce((acc, row) => {
             const data = {
                 species: row[6],
@@ -152,14 +152,14 @@ function StintData() {
                     confidence: row[28],
                 }]
             };
-    
+
             acc.push(data);
-    
+
             return acc;
         }, []);
-    
+
         const stintData = trimmedRows[1];
-    
+
         const jsonData = {
             obsInit: stintData[0],
             location: stintData[1],
@@ -169,12 +169,13 @@ function StintData() {
             stintNotes: stintData[5],
             birdDetails: feedingData,
         };
-    
+
         return jsonData;
-    }    
+    }
 
     //handle save data to csv file button
     const handleSave = () => {
+        setCurrentTime("timeEnd");
         let csv = '';
         let data = { ...form.getFieldsValue(), birdDetails: birdDetails };
         data.date = formatDate(data.date);
@@ -184,7 +185,7 @@ function StintData() {
         const file = new Blob([csv], { type: 'text/csv;charset=utf-8' });
 
         saveAs(file, `${data.timeStart}-${data.timeEnd}-${data.date}-${data.obsInit}-${data.location}.csv`);
-        
+
         message.success("Dowloaded Successfully!");
     }
 
@@ -237,8 +238,31 @@ function StintData() {
         form.setFieldValue(field, time);
     }
 
+    /**
+    * Handles opening data from localStorage
+    */
+    const handleOpenFromLocalStorage = () => {
+        const backupData = localStorage.getItem('backup');
+
+
+        // if local storage not null
+        if (backupData != null) {
+            // Parse the JSON data from localStorage
+
+            const jsonData = JSON.parse(backupData);
+
+            setStint(jsonData);
+        }
+    };
+
+    const handlePreview = () => {
+
+    }
+
     // When users accidentally close the app, ask for confirmation
     useEffect(() => {
+        //set the time when open the app
+        setCurrentTime("timeStart");
         handleOpenFromLocalStorage();
 
         const handleBeforeUnload = (e) => {
@@ -253,23 +277,6 @@ function StintData() {
             window.removeEventListener('beforeunload', handleBeforeUnload);
         };
     }, []);
-
-    /**
-     * Handles opening data from localStorage
-     */
-    const handleOpenFromLocalStorage = () => {
-        const backupData = localStorage.getItem('backup');
-
-
-        // if local storage not null
-        if (backupData != null) {
-            // Parse the JSON data from localStorage
-
-            const jsonData = JSON.parse(backupData);
-
-            setStint(jsonData);
-        }
-    };
 
     //confirm exit button
     if (isModalVisible) {
@@ -292,10 +299,6 @@ function StintData() {
                 Are you sure you want to leave this page?
             </Modal>
         )
-    }
-
-    const handlePreview = () => {
-
     }
 
     if (!isFeeding) {
@@ -336,7 +339,6 @@ function StintData() {
                                 <Item
                                     label="Time Start"
                                     name="timeStart"
-                                    rules={[{ required: true, message: 'Please enter Time Start!' }]}
                                     style={{ margin: '0px' }}
                                     labelCol={{ xs: 24, sm: 8, md: 8, lg: 8, xl: 8 }} // Responsive label column
                                     wrapperCol={{ xs: 24, sm: 16 }} // Responsive wrapper column
@@ -353,7 +355,6 @@ function StintData() {
                                 <Item
                                     label="Time End"
                                     name="timeEnd"
-                                    rules={[{ required: true, message: 'Please enter Time End!' }]}
                                     style={{ margin: '0px' }}
                                     labelCol={{ xs: 24, sm: 8, md: 8, lg: 8, xl: 8 }} // Responsive label column
                                     wrapperCol={{ xs: 24, sm: 16 }} // Responsive wrapper column
@@ -424,6 +425,5 @@ export default StintData;
 
 //TODO: 
 //Show data
-//Auto timer
-//Closed feeding
 //Highlight selected button
+//Drop down buttons and sorted button

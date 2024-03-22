@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Button, InputNumber, Typography, Row, Col } from 'antd';
-import { PlusOutlined, MinusOutlined } from '@ant-design/icons'; // Import icons
+import { Form, Input, Button, InputNumber, Typography, Row, Col, Tooltip, Modal } from 'antd';
+import { PlusOutlined, MinusOutlined, CloseOutlined } from '@ant-design/icons';
 import Band from './Band';
-import { generateLabelInfo } from './InfoBox';
+import { InfoBox, generateLabelInfo } from './InfoBox';
 import { generateOptions } from './Option'
 
 const { Item } = Form;
@@ -77,13 +77,6 @@ const styles = {
         flexDirection: 'column',
         alignItems: 'center',
         gap: '15px',
-    },
-
-    button: {
-        width: '100%',
-        height: '50px',
-        fontSize: '16px',
-        backgroundColor: '#EFEFEF',
     },
 
     label: {
@@ -175,26 +168,101 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand }) {
 
         //reset inputs
         form.setFieldsValue({ ...initFeeding });
+        setCurrentTime("time");
     }
 
     //function to remove feeding tab
     const removeData = () => {
         if (data.length > 1) {
-            //remove data
-            let updated = [...data].filter((_item, idx) => idx !== index);
-            setData(updated);
+            Modal.confirm({
+                title: 'Are you sure you want to delete the current data?',
+                content: 'This action cannot be undone.',
+                onOk: () => {
+                    //remove data
+                    let updated = [...data].filter((_item, idx) => idx !== index);
+                    setData(updated);
 
-            //reset inputs and index
-            setIndex(index - 1);
-            form.setFieldsValue(data[index - 1]);
+                    //reset inputs and index
+                    setIndex(index - 1);
+                    form.setFieldsValue(data[index - 1]);
+                },
+                onCancel: () => {
+
+                }
+            })
         }
+    }
+
+    const closeData = () => {
+        const curData = data[index];
+        let emptyFields = [];
+
+        for (const field in curData) {
+            if (field === 'birdNotes') {
+                continue;
+            }
+
+            const value = curData[field];
+
+            if (Array.isArray(value)) {
+                value.forEach((item, index) => {
+                    for (const element in item) {
+                        if (item[element] === '') {
+                            emptyFields.push(`${field}${index + 1}`);
+                            break;
+                        }
+                    }
+                })
+            }
+            else if (value === '') {
+                emptyFields.push(field);
+            }
+        }
+
+        if (emptyFields.length !== 0) {
+            Modal.confirm({
+                title: 'Closed the current data?',
+                content: `Empty field(s): ${emptyFields}`,
+                onOk: () => {
+                    //TODO: implement close feeding
+                },
+                onCancel: () => {
+
+                }
+            })
+        }
+        else {
+            //TODO: implement close feeding
+        }
+    }
+
+    const clearAll = () => {
+        Modal.confirm({
+            title: 'Are you sure you want to clear all fields?',
+            content: 'This action cannot be undone.',
+            onOk: () => {
+                form.setFieldsValue({ ...initFeeding });
+            },
+            onCancel: () => {
+
+            }
+        })
     }
 
     //function to remove all feeding tab
     const removeAll = () => {
-        setData([{ ...initFeeding }]);
-        setIndex(0);
-        form.setFieldsValue(data[0]);
+        Modal.confirm({
+            title: 'Are you sure you want to remove all items?',
+            content: 'This action cannot be undone.',
+            onOk: () => {
+                setData([{ ...initFeeding }]);
+                setIndex(0);
+                form.setFieldsValue({ ...initFeeding });
+            },
+            onCancel: () => {
+
+            }
+        })
     }
 
     //function to navigate to stint or band tab
@@ -212,6 +280,10 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand }) {
     //when first load, switch to the feeding tab number index
     useEffect(() => {
         switchData(index);
+
+        if (form.getFieldValue("time") === '') {
+            setCurrentTime("time");
+        }
     }, [])
 
     if (!isBand) {
@@ -237,7 +309,6 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand }) {
                                 <Item
                                     label="Time"
                                     name="time"
-                                    rules={[{ required: true, message: 'Please enter a time!' }]}
                                     style={{ margin: '0px' }}
                                 >
                                     <Input value={form.getFieldValue('time')} />
@@ -256,20 +327,34 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand }) {
                         <div style={styles.rightTop}>
                             <div>Number of data: {data.length}</div>
                             <div>
-                                <Button
-                                    icon={<PlusOutlined />}
-                                    onClick={() => addData()}
-                                    style={{ borderColor: 'green', color: 'green', margin: '5px 5px 5px 0px' }}
-                                >
-                                    Add
-                                </Button>
-                                <Button
-                                    icon={<MinusOutlined />}
-                                    danger
-                                    onClick={() => removeData()}
-                                >
-                                    Remove
-                                </Button>
+                                <Tooltip title='Click to add a data'>
+                                    <Button
+                                        icon={<PlusOutlined />}
+                                        onClick={() => addData()}
+                                        style={{ borderColor: 'green', color: 'green', margin: '5px 0px 5px 0px' }}
+                                    >
+                                        Add
+                                    </Button>
+                                </Tooltip>
+                                <Tooltip title='Click to remove the current data'>
+                                    <Button
+                                        icon={<MinusOutlined />}
+                                        danger
+                                        onClick={() => removeData()}
+                                        style={{ margin: '0px 5px' }}
+                                    >
+                                        Remove
+                                    </Button>
+                                </Tooltip>
+                                <Tooltip title='Click to close the current data'>
+                                    <Button
+                                        icon={<CloseOutlined />}
+                                        style={{ borderColor: '#ff4c00', color: '#ff4c00', margin: '5px 0px 5px 0px' }}
+                                        onClick={() => closeData()}
+                                    >
+                                        Closed
+                                    </Button>
+                                </Tooltip>
                             </div>
                             <div style={styles.text}>List of data:</div>
                             <div style={styles.dataContainer}>
@@ -292,13 +377,13 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand }) {
                     <div style={styles.botbox}>
                         <Row>
                             <Col span={12} style={styles.col}>
-                                {
-                                    generateLabelInfo('Species', 'Info', styles)
-                                }
                                 <Item
                                     name="species"
                                     rules={[{ required: true, message: 'Please enter species!' }]}
                                 >
+                                    {
+                                        generateLabelInfo('Species', 'Info', true, styles)
+                                    }
                                     <Input value={form.getFieldValue('species')} />
                                 </Item>
 
@@ -309,24 +394,24 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand }) {
                                 </div>
                             </Col>
                             <Col span={12} style={styles.col}>
-                                {
-                                    generateLabelInfo('Loc', 'Info', styles)
-                                }
                                 <Item
                                     name='loc'
                                     rules={[{ required: true, message: 'Please enter a value!' }]}
                                 >
+                                    {
+                                        generateLabelInfo('Loc', 'Info', true, styles)
+                                    }
                                     <Input value={form.getFieldValue('loc')} />
                                 </Item>
                             </Col>
                             <Col span={12} style={styles.col}>
-                                {
-                                    generateLabelInfo('Prox', 'Info', styles)
-                                }
                                 <Item
                                     name='prox'
                                     rules={[{ required: true, message: 'Please enter species!' }]}
                                 >
+                                    {
+                                        generateLabelInfo('Prox', 'Info', true, styles)
+                                    }
                                     <InputNumber value={form.getFieldValue('prox')} style={{ width: '100%' }} />
                                 </Item>
 
@@ -341,8 +426,12 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand }) {
 
                     <div>
                         <div style={{ ...styles.botbox, justifyContent: 'flex-start' }}>
-                            <Button danger style={{ margin: 5 }} onClick={() => form.setFieldsValue({ ...initFeeding })}>Clear all</Button>
-                            <Button danger style={{ margin: 5 }} onClick={() => removeAll()}>Delete all</Button>
+                            <Tooltip title='Clear ALL fields'>
+                                <Button danger style={{ margin: 5 }} onClick={() => clearAll()}>Clear all</Button>
+                            </Tooltip>
+                            <Tooltip title='Delete ALL data'>
+                                <Button danger style={{ margin: 5 }} onClick={() => removeAll()}>Delete all</Button>
+                            </Tooltip>
                         </div>
                     </div>
 

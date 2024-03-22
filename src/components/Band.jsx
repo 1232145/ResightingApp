@@ -50,7 +50,7 @@ function Band({ index, initBand, setIsBand, data, setData, styles }) {
     return (
       <Col span={12} style={styles.col}>
         {
-          generateLabelInfo(label, "Info to add", styles)
+          generateLabelInfo(label, "Info to add", true, styles)
         }
         <Item
           name={field}

@@ -8,19 +8,17 @@ const styles = {
         fontSize: '16px',
         backgroundColor: '#EFEFEF',
     },
-
-    selectedButton: {
-        backgroundColor: 'green',
-        color: 'white',
-    },
 }
 
 function Option({ form, field, item }) {
+    const handleClick = (field, curItem) => {
+        form.setFieldValue(field, curItem);
+    }
 
     return (
         <Button
             style={styles.button}
-            onClick={() => form.setFieldValue(field, item)}
+            onClick={() => handleClick(field, item)}
         >
             {item}
         </Button>

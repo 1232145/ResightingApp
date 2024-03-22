@@ -16,13 +16,16 @@ const InfoBox = ({ info }) => {
   );
 };
 
-const generateLabelInfo = (label, info, styles) => {
-    return (
-        <div style={styles?.label}>
-            <label style={styles?.text}>{label}</label>
-            <InfoBox info={info} />
-        </div>
-    )
+const generateLabelInfo = (label, info, required, styles) => {
+  return (
+    <div style={styles?.label}>
+      <label style={styles?.text}>
+        {label}
+        {required && <span style={{ color: 'red', marginLeft: 5 }}>*</span>}
+      </label>
+      <InfoBox info={info} />
+    </div>
+  )
 }
 
-export {InfoBox, generateLabelInfo}
+export { InfoBox, generateLabelInfo }
