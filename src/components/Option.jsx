@@ -25,7 +25,7 @@ function Option({ form, field, item }) {
     );
 }
 
-function generateOptions(options, form, field) {
+function Options({options, form, field}) {
     return (
         <>
             {
@@ -35,4 +35,4 @@ function generateOptions(options, form, field) {
     )
 }
 
-export { Option, generateOptions };
+export { Option, Options };

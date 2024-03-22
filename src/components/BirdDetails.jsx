@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, InputNumber, Typography, Row, Col, Tooltip, Modal } from 'antd';
 import { PlusOutlined, MinusOutlined, CloseOutlined } from '@ant-design/icons';
 import Band from './Band';
-import { InfoBox, generateLabelInfo } from './InfoBox';
-import { generateOptions } from './Option'
+import { LabelInfo } from './InfoBox';
+import { Options } from './Option'
 
 const { Item } = Form;
 const { Title } = Typography;
@@ -377,48 +377,38 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand }) {
                     <div style={styles.botbox}>
                         <Row>
                             <Col span={12} style={styles.col}>
+                                <LabelInfo label='species' info='Info to be added' required={true} styles={styles} />
                                 <Item
                                     name="species"
                                     rules={[{ required: true, message: 'Please enter species!' }]}
                                 >
-                                    {
-                                        generateLabelInfo('Species', 'Info', true, styles)
-                                    }
                                     <Input value={form.getFieldValue('species')} />
                                 </Item>
 
                                 <div style={styles.options}>
-                                    {
-                                        generateOptions(speciesOptions, form, 'species')
-                                    }
+                                    <Options options={speciesOptions} form={form} field='species' />
                                 </div>
                             </Col>
                             <Col span={12} style={styles.col}>
+                                <LabelInfo label='Loc' info='Info to be added' required={true} styles={styles} />
                                 <Item
                                     name='loc'
                                     rules={[{ required: true, message: 'Please enter a value!' }]}
                                 >
-                                    {
-                                        generateLabelInfo('Loc', 'Info', true, styles)
-                                    }
                                     <Input value={form.getFieldValue('loc')} />
                                 </Item>
                             </Col>
                             <Col span={12} style={styles.col}>
+                                <LabelInfo label='Prox' info='Info to be added' required={true} styles={styles} />
                                 <Item
                                     name='prox'
                                     rules={[{ required: true, message: 'Please enter species!' }]}
                                 >
-                                    {
-                                        generateLabelInfo('Prox', 'Info', true, styles)
-                                    }
                                     <InputNumber value={form.getFieldValue('prox')} style={{ width: '100%' }} />
                                 </Item>
 
                                 <div style={styles.options}>
-                                    {
-                                        generateOptions(proxOptions, form, 'prox')
-                                    }
+                                    <Options options={proxOptions} form={form} field='prox' />
                                 </div>
                             </Col>
                         </Row>

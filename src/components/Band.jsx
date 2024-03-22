@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Typography, Row, Col } from 'antd';
-import { generateLabelInfo } from './InfoBox';
-import { generateOptions } from './Option';
+import { LabelInfo } from './InfoBox';
+import { Options } from './Option';
 
 const { Item } = Form;
 const { Title } = Typography;
@@ -49,9 +49,7 @@ function Band({ index, initBand, setIsBand, data, setData, styles }) {
   const generateTemplate = (field, label, options) => {
     return (
       <Col span={12} style={styles.col}>
-        {
-          generateLabelInfo(label, "Info to add", true, styles)
-        }
+        <LabelInfo label={label} info='To be added' required={true} styles={styles} />
         <Item
           name={field}
           rules={[{ required: true, message: 'Please enter a value!' }]}
@@ -60,9 +58,7 @@ function Band({ index, initBand, setIsBand, data, setData, styles }) {
         </Item>
 
         <div style={styles.options}>
-          {
-            generateOptions(options, form, field)
-          }
+          <Options options={options} form={form} field={field} />
         </div>
       </Col>
     )
@@ -136,18 +132,6 @@ function Band({ index, initBand, setIsBand, data, setData, styles }) {
               generateTemplate('leg', 'Leg (L/R)', legs)
             }
 
-            <Col span={12} style={styles.col}>
-              {
-                generateLabelInfo("Band Number", "Info to add", styles)
-              }
-              <Item
-                name='number'
-                rules={[{ required: true, message: 'Please enter a value!' }]}
-              >
-                <Input value={form.getFieldValue('number')} />
-              </Item>
-            </Col>
-
             {
               generateTemplate('wearScore', 'Wear Score', wearScores)
             }
@@ -159,6 +143,16 @@ function Band({ index, initBand, setIsBand, data, setData, styles }) {
             {
               generateTemplate('confidence', 'Confidence', confidence)
             }
+
+            <Col span={12} style={styles.col}>
+              <LabelInfo label="Band Number" info='To be added' required={true} styles={styles} />
+              <Item
+                name='number'
+                rules={[{ required: true, message: 'Please enter a value!' }]}
+              >
+                <Input value={form.getFieldValue('number')} />
+              </Item>
+            </Col>
           </Row>
         </div>
 

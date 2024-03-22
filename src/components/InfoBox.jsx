@@ -16,7 +16,7 @@ const InfoBox = ({ info }) => {
   );
 };
 
-const generateLabelInfo = (label, info, required, styles) => {
+const LabelInfo = ({label, info, required, styles}) => {
   return (
     <div style={styles?.label}>
       <label style={styles?.text}>
@@ -28,4 +28,4 @@ const generateLabelInfo = (label, info, required, styles) => {
   )
 }
 
-export { InfoBox, generateLabelInfo }
+export { InfoBox, LabelInfo }
