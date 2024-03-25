@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from 'antd';
 
 const styles = {
@@ -8,31 +8,40 @@ const styles = {
         fontSize: '16px',
         backgroundColor: '#EFEFEF',
     },
+
+    highlight: {
+        backgroundColor: 'green',
+        color: 'white',
+        border: '1px solid black'
+    }
 }
 
-function Option({ form, field, item }) {
-    const handleClick = (field, curItem) => {
+function Options({ options, form, field }) {
+    const [selected, setSelected] = useState(-1);
+
+    const handleClick = (field, curItem, index) => {
         form.setFieldValue(field, curItem);
+        setSelected(index);
     }
 
     return (
-        <Button
-            style={styles.button}
-            onClick={() => handleClick(field, item)}
-        >
-            {item}
-        </Button>
+        <>
+            {
+                options.map((item, index) =>
+                    <Button
+                        style={{
+                            ...styles.button,
+                            ...(selected === index && styles.highlight),
+                        }}
+                        onClick={() => handleClick(field, item, index)}
+                        key={index}
+                    >
+                        {item}
+                    </Button>
+                )
+            }
+        </>
     );
 }
 
-function Options({options, form, field}) {
-    return (
-        <>
-            {
-                options.map((item, index) => <Option key={index} form={form} field={field} item={item} />)
-            }
-        </>
-    )
-}
-
-export { Option, Options };
+export { Options };

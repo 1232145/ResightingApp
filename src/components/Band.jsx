@@ -88,24 +88,22 @@ function Band({ index, initBand, setIsBand, data, setData, styles }) {
           <div style={styles.rightTop}>
             <div>Select band number:</div>
             <div>
-              <Button
-                onClick={() => switchBand(0)}
-                style={{
-                  ...styles.dataButton,
-                  ...(bandNumber === 0 && styles.highlight),
-                }}
-              >
-                Band 1
-              </Button>
-              <Button
-                onClick={() => switchBand(1)}
-                style={{
-                  ...styles.dataButton,
-                  ...(bandNumber === 1 && styles.highlight),
-                }}
-              >
-                Band 2
-              </Button>
+              {
+                data.map((_, index) => {
+                  return (
+                    <Button
+                      key={index}
+                      onClick={() => switchBand(index)}
+                      style={{
+                        ...styles.button,
+                        ...(bandNumber === index && styles.highlight),
+                      }}
+                    >
+                      Band {index + 1}
+                    </Button>
+                  )
+                })
+              }
             </div>
           </div>
         </div>

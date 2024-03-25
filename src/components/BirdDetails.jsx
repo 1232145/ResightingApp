@@ -86,7 +86,7 @@ const styles = {
         margin: '0px'
     },
 
-    dataButton: {
+    button: {
         width: '20%',
         height: '37.5px',
         margin: '2px',
@@ -362,7 +362,7 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand }) {
                                     <Button
                                         key={idx}
                                         style={{
-                                            ...styles.dataButton,
+                                            ...styles.button,
                                             ...(idx === index && styles.highlight),
                                         }}
                                         onClick={() => switchData(idx)}
