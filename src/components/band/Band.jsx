@@ -1,20 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Typography, Row, Col } from 'antd';
-import { LabelInfo } from './InfoBox';
-import { Options } from './Option';
+import { LabelInfo } from '../InfoBox';
+import BandType from './BandType';
+import BandColor from './BandColor';
+import EngravingColor from './EngravingColor';
+import SpecialFeature from './SpecialFeature';
+import WearScore from './WearScore';
+import BandLeg from './BandLeg';
+import BandRead from './BandRead';
+import BandConfidence from './BandConfidence';
 
 const { Item } = Form;
 const { Title } = Typography;
-
-//TODO: Divide each options button into seperate component
-const bandTypes = ["CC", "BC", "PFR", "NRM", "BBL", "RMFR"];
-const bandColors = ["M", "W", "BLK", "Y", "BLU", "BRW", "R", "G", "LG", "BrB", "ObO", "Or"];
-const engravingColors = ["M", "W", "BLK", "BLU", "BRW", "None", "R", "Y"];
-const specialFeatures = ["DAR", "DBR", "HTwR", "HThR", "VR", "HNR", "VNR", "NC", "NBi"]
-const legs = ["L", "R"];
-const wearScores = ["1", "2", "3", "4", "U"];
-const read = [];
-const confidence = [];
 
 function Band({ index, initBand, setIsBand, data, setData, styles }) {
   const [form] = Form.useForm();
@@ -45,7 +42,6 @@ function Band({ index, initBand, setIsBand, data, setData, styles }) {
     setIsBand(bool);
   }
 
-  //function to generate button template
   const generateTemplate = (field, label, options) => {
     return (
       <Col span={12} style={styles.col}>
@@ -58,7 +54,7 @@ function Band({ index, initBand, setIsBand, data, setData, styles }) {
         </Item>
 
         <div style={styles.options}>
-          <Options options={options} form={form} field={field} />
+          {/* <Options options={options} form={form} field={field} /> */}
         </div>
       </Col>
     )
@@ -110,37 +106,14 @@ function Band({ index, initBand, setIsBand, data, setData, styles }) {
 
         <div style={styles.botbox}>
           <Row>
-            {
-              generateTemplate('type', 'Band Type', bandTypes)
-            }
-
-            {
-              generateTemplate('color', 'Band Color', bandColors)
-            }
-
-            {
-              generateTemplate('engrColor', 'Engr. Color', engravingColors)
-            }
-
-            {
-              generateTemplate('specFeat', 'Spec. Feat', specialFeatures)
-            }
-
-            {
-              generateTemplate('leg', 'Leg (L/R)', legs)
-            }
-
-            {
-              generateTemplate('wearScore', 'Wear Score', wearScores)
-            }
-
-            {
-              generateTemplate('read', 'Read', read)
-            }
-
-            {
-              generateTemplate('confidence', 'Confidence', confidence)
-            }
+            <BandType form={form} styles={styles}/>
+            <BandColor form={form} styles={styles} />
+            <EngravingColor form={form} styles={styles} />
+            <SpecialFeature form={form} styles={styles} />
+            <BandLeg form={form} styles={styles} />
+            <WearScore form={form} styles={styles} />
+            <BandRead form={form} styles={styles} />
+            <BandConfidence form={form} styles={styles} />
 
             <Col span={12} style={styles.col}>
               <LabelInfo label="Band Number" info='To be added' required={true} styles={styles} />

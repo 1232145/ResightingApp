@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Button, InputNumber, Typography, Row, Col, Tooltip, Modal } from 'antd';
+import { Form, Input, Button, Typography, Row, Col, Tooltip, Modal } from 'antd';
 import { PlusOutlined, MinusOutlined, CloseOutlined } from '@ant-design/icons';
-import Band from './Band';
-import { LabelInfo } from './InfoBox';
-import { Options } from './Option'
+import Band from '../band/Band';
+import { LabelInfo } from '../InfoBox';
+import Species from './Species';
+import Prox from './Prox';
 
 const { Item } = Form;
 const { Title } = Typography;
@@ -83,7 +84,8 @@ const styles = {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        margin: '0px'
+        margin: '0px',
+        height: '50px'
     },
 
     button: {
@@ -106,9 +108,6 @@ const styles = {
         border: '1px solid black'
     }
 };
-
-const speciesOptions = ["ATPU", "ARTE"];
-const proxOptions = [1, 2, 5, 10, 15];
 
 function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand }) {
     const [form] = Form.useForm();
@@ -238,7 +237,7 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand }) {
 
     const clearAll = () => {
         Modal.confirm({
-            title: 'Are you sure you want to clear all fields?',
+            title: 'Are you sure you want to clear ALL fields?',
             content: 'This action cannot be undone.',
             onOk: () => {
                 form.setFieldsValue({ ...initFeeding });
@@ -252,7 +251,7 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand }) {
     //function to remove all feeding tab
     const removeAll = () => {
         Modal.confirm({
-            title: 'Are you sure you want to remove all items?',
+            title: 'Are you sure you want to remove ALL items?',
             content: 'This action cannot be undone.',
             onOk: () => {
                 setData([{ ...initFeeding }]);
@@ -377,17 +376,7 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand }) {
                     <div style={styles.botbox}>
                         <Row>
                             <Col span={12} style={styles.col}>
-                                <LabelInfo label='species' info='Info to be added' required={true} styles={styles} />
-                                <Item
-                                    name="species"
-                                    rules={[{ required: true, message: 'Please enter species!' }]}
-                                >
-                                    <Input value={form.getFieldValue('species')} />
-                                </Item>
-
-                                <div style={styles.options}>
-                                    <Options options={speciesOptions} form={form} field='species' />
-                                </div>
+                                <Species form={form} styles={styles} />
                             </Col>
                             <Col span={12} style={styles.col}>
                                 <LabelInfo label='Loc' info='Info to be added' required={true} styles={styles} />
@@ -399,17 +388,7 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand }) {
                                 </Item>
                             </Col>
                             <Col span={12} style={styles.col}>
-                                <LabelInfo label='Prox' info='Info to be added' required={true} styles={styles} />
-                                <Item
-                                    name='prox'
-                                    rules={[{ required: true, message: 'Please enter species!' }]}
-                                >
-                                    <InputNumber value={form.getFieldValue('prox')} style={{ width: '100%' }} />
-                                </Item>
-
-                                <div style={styles.options}>
-                                    <Options options={proxOptions} form={form} field='prox' />
-                                </div>
+                                <Prox form={form} styles={styles} />
                             </Col>
                         </Row>
                     </div>

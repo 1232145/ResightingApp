@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from 'antd';
 
 const styles = {
@@ -16,14 +16,7 @@ const styles = {
     }
 }
 
-function Options({ options, form, field }) {
-    const [selected, setSelected] = useState(-1);
-
-    const handleClick = (field, curItem, index) => {
-        form.setFieldValue(field, curItem);
-        setSelected(index);
-    }
-
+function Options({ options, selected, setData }) {
     return (
         <>
             {
@@ -31,9 +24,9 @@ function Options({ options, form, field }) {
                     <Button
                         style={{
                             ...styles.button,
-                            ...(selected === index && styles.highlight),
+                            ...(selected === item && styles.highlight),
                         }}
-                        onClick={() => handleClick(field, item, index)}
+                        onClick={() => setData(item)}
                         key={index}
                     >
                         {item}

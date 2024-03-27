@@ -1,5 +1,5 @@
 import './App.css';
-import StintData from './components/StintData';
+import StintData from './components/stint/StintData';
 
 function App() {
 

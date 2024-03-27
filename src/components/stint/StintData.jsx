@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { saveAs } from 'file-saver';
 import { Form, Input, Button, DatePicker, Row, Col, Typography, Upload, message, Modal } from 'antd';
-import BirdDetails from './BirdDetails';
+import BirdDetails from '../bird/BirdDetails';
 import moment from 'moment';
 
 const { Item } = Form;
@@ -425,5 +425,4 @@ export default StintData;
 
 //TODO: 
 //Show data
-//Highlight selected button
 //Drop down buttons and sorted button

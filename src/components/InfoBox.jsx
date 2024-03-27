@@ -16,12 +16,17 @@ const InfoBox = ({ info }) => {
   );
 };
 
-const LabelInfo = ({label, info, required, styles}) => {
+const LabelInfo = ({ label, info, required, styles }) => {
   return (
     <div style={styles?.label}>
       <label style={styles?.text}>
         {label}
-        {required && <span style={{ color: 'red', marginLeft: 5 }}>*</span>}
+        {
+          required &&
+          <span style={{ color: 'red', marginLeft: 5 }}>
+            *
+          </span>
+        }
       </label>
       <InfoBox info={info} />
     </div>
