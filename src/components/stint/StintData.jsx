@@ -175,7 +175,10 @@ function StintData() {
 
     //handle save data to csv file button
     const handleSave = () => {
-        setCurrentTime("timeEnd");
+        if (form.getFieldValue('timeEnd') === '') {
+            setCurrentTime("timeEnd");
+        }
+
         let csv = '';
         let data = { ...form.getFieldsValue(), birdDetails: birdDetails };
         data.date = formatDate(data.date);
@@ -262,7 +265,10 @@ function StintData() {
     // When users accidentally close the app, ask for confirmation
     useEffect(() => {
         //set the time when open the app
-        setCurrentTime("timeStart");
+        if (form.getFieldValue('timeStart') === '') {
+            setCurrentTime("timeStart");
+        }
+
         handleOpenFromLocalStorage();
 
         const handleBeforeUnload = (e) => {
@@ -426,3 +432,6 @@ export default StintData;
 //TODO: 
 //Show data
 //Drop down buttons and sorted button
+
+//ERROR:
+//Import: prox does not highlight

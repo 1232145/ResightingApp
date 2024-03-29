@@ -5,6 +5,7 @@ import Band from '../band/Band';
 import { LabelInfo } from '../InfoBox';
 import Species from './Species';
 import Prox from './Prox';
+import ToggleButton from '../ToggleButton';
 
 const { Item } = Form;
 const { Title } = Typography;
@@ -49,6 +50,7 @@ const styles = {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
+        height: '20vh'
     },
 
     leftTop: {
@@ -106,13 +108,24 @@ const styles = {
         backgroundColor: 'green',
         color: 'white',
         border: '1px solid black'
-    }
+    },
+
+    toggleBtn: {
+        margin: '5px 0px',
+    },
+
+    closedButton: {
+        backgroundColor: 'lightgray', // Change background color for closed buttons
+        color: '#999', // Change text color for closed buttons
+    },
 };
 
 function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand }) {
     const [form] = Form.useForm();
-    const [isBand, setIsBand] = useState(false); //toggle between feeding and band tab
+    const [isBand, setIsBand] = useState(false); //toggleClosed between feeding and band tab
     const [index, setIndex] = useState(0); //feeding index
+    const [toggleClosed, setToggleClosed] = useState(true);
+    const [closedIndices, setClosedIndices] = useState([]);
 
     //handle time stamp
     const setCurrentTime = (field) => {
@@ -177,9 +190,11 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand }) {
                 title: 'Are you sure you want to delete the current data?',
                 content: 'This action cannot be undone.',
                 onOk: () => {
-                    //remove data
-                    let updated = [...data].filter((_item, idx) => idx !== index);
+                    //remove data                    
+                    let updated = [...data].filter((_, idx) => idx !== index);
                     setData(updated);
+
+                    setClosedIndices([...closedIndices.filter(item => item !== index)]);
 
                     //reset inputs and index
                     setIndex(index - 1);
@@ -193,45 +208,50 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand }) {
     }
 
     const closeData = () => {
-        const curData = data[index];
-        let emptyFields = [];
+        if (closedIndices.includes(index)) {
+            setClosedIndices([...closedIndices.filter(item => item !== index)]);
+        }
+        else {
+            const curData = data[index];
+            let emptyFields = [];
 
-        for (const field in curData) {
-            if (field === 'birdNotes') {
-                continue;
+            for (const field in curData) {
+                if (field === 'birdNotes') {
+                    continue;
+                }
+
+                const value = curData[field];
+
+                if (Array.isArray(value)) {
+                    value.forEach((item, index) => {
+                        for (const element in item) {
+                            if (item[element] === '') {
+                                emptyFields.push(`${field}${index + 1}`);
+                                break;
+                            }
+                        }
+                    })
+                }
+                else if (value === '') {
+                    emptyFields.push(field);
+                }
             }
 
-            const value = curData[field];
+            if (emptyFields.length !== 0) {
+                Modal.confirm({
+                    title: 'Closed the current data?',
+                    content: `Empty field(s): ${emptyFields}`,
+                    onOk: () => {
+                        setClosedIndices([...closedIndices, index]);
+                    },
+                    onCancel: () => {
 
-            if (Array.isArray(value)) {
-                value.forEach((item, index) => {
-                    for (const element in item) {
-                        if (item[element] === '') {
-                            emptyFields.push(`${field}${index + 1}`);
-                            break;
-                        }
                     }
                 })
             }
-            else if (value === '') {
-                emptyFields.push(field);
+            else {
+                setClosedIndices([...closedIndices, index]);
             }
-        }
-
-        if (emptyFields.length !== 0) {
-            Modal.confirm({
-                title: 'Closed the current data?',
-                content: `Empty field(s): ${emptyFields}`,
-                onOk: () => {
-                    //TODO: implement close feeding
-                },
-                onCancel: () => {
-
-                }
-            })
-        }
-        else {
-            //TODO: implement close feeding
         }
     }
 
@@ -257,6 +277,7 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand }) {
                 setData([{ ...initFeeding }]);
                 setIndex(0);
                 form.setFieldsValue({ ...initFeeding });
+                setClosedIndices([]);
             },
             onCancel: () => {
 
@@ -354,21 +375,33 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand }) {
                                         Closed
                                     </Button>
                                 </Tooltip>
+                                <ToggleButton label="Hide Closed:" toggle={toggleClosed} setToggle={setToggleClosed} styles={styles.toggleBtn} />
                             </div>
                             <div style={styles.text}>List of data:</div>
                             <div style={styles.dataContainer}>
-                                {data.map((_item, idx) => (
-                                    <Button
-                                        key={idx}
-                                        style={{
+                                {
+                                    data.map((_, idx) => {
+                                        let isClosed = closedIndices.includes(idx);
+
+                                        const buttonStyles = {
                                             ...styles.button,
-                                            ...(idx === index && styles.highlight),
-                                        }}
-                                        onClick={() => switchData(idx)}
-                                    >
-                                        Data {idx + 1}
-                                    </Button>
-                                ))}
+                                            ...(isClosed && styles.closedButton),
+                                            ...(idx === index && (isClosed ? {...styles.highlight, backgroundColor: 'crimson'} : styles.highlight)),
+                                        };
+
+                                        if (!toggleClosed || !isClosed) {
+                                            return (
+                                                <Button
+                                                    key={idx}
+                                                    style={buttonStyles}
+                                                    onClick={() => switchData(idx)}
+                                                >
+                                                    Data {idx + 1}
+                                                </Button>
+                                            )
+                                        }
+                                    })
+                                }
                             </div>
                         </div>
                     </div>
