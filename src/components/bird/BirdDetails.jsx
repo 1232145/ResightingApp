@@ -50,7 +50,6 @@ const styles = {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        height: '20vh'
     },
 
     leftTop: {
