@@ -63,7 +63,7 @@ function Band({ index, initBand, setIsBand, data, setData, styles }) {
   return (
     <div style={styles.container}>
       <Title level={3} style={{ marginBottom: '20px' }}>
-        Band Number {bandNumber + 1} / Feeding {index + 1}
+        Band Number {bandNumber + 1} / Bird {index + 1}
       </Title>
 
       <Form

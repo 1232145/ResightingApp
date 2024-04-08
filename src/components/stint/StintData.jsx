@@ -39,6 +39,12 @@ const styles = {
         marginLeft: '10px',
         alignSelf: 'center',
     },
+
+    wrapper: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center'
+    }
 };
 
 
@@ -75,8 +81,10 @@ function StintData() {
 
     // Default stint data
     const [stint, setStint] = useState({
+        id: 0,
         obsInit: '',
-        location: '',
+        island: '',
+        blind: '',
         timeStart: '',
         timeEnd: '',
         date: '',
@@ -87,11 +95,21 @@ function StintData() {
     const [isFeeding, setIsFeeding] = useState(false); //toggle between stint and feeding
     const [isModalVisible, setIsModalVisible] = useState(false); //exit confirmation
 
+    function hash(str) {
+        let hash = 5381;
+        
+        for (let i = 0; i < str.length; i++) {
+            hash = (hash * 33) ^ str.charCodeAt(i);
+        }
+
+        return hash >>> 0; // Convert to unsigned 32-bit integer
+    }
+
     //convert json to csv file
     const jsonToCSV = (json) => {
 
         const headers = [
-            'Obs Init, Location (Blind), Time Start, Time End, Date (mm/dd/yy), Stint Notes, Species (Alpha), Time, Loc, Prox (m), Bird Notes, Band Type, Band Color, Engr. Color, Spec. Feat, Leg (L/R), Band Number, Band Wear Present (Y/N) /Wear Score, Read, Confidence, Band Type, Band Color, Engr. Color, Spec. Feat, Leg (L/R), Band Number, Band Wear Present (Y/N) /Wear Score, Confidence, Read'
+            'StintID', 'Obs Init, Island, Location/Blind, Time Start, Time End, Date (mm/dd/yy), Stint Notes, Species (Alpha), Time, Loc, Prox (m), Bird Notes, Band Type, Band Color, Engr. Color, Spec. Feat, Leg (L/R), Band Number, Band Wear Present (Y/N) /Wear Score, Read, Confidence, Band Type, Band Color, Engr. Color, Spec. Feat, Leg (L/R), Band Number, Band Wear Present (Y/N) /Wear Score, Confidence, Read'
         ];
 
         const csvRows = [headers.join(',')];
@@ -100,7 +118,7 @@ function StintData() {
             const { band } = feeding;
 
             const row = [
-                json.obsInit, json.location, json.timeStart, json.timeEnd, json.date, json.stintNotes,
+                json.id, json.obsInit, json.island, json.blind, json.timeStart, json.timeEnd, json.date, json.stintNotes,
                 feeding.species, feeding.time, feeding.loc, feeding.prox, feeding.birdNotes,
                 band[0].type, band[0].color, band[0].engrColor, band[0].specFeat, band[0].leg, band[0].number, band[0].wearScore, band[0].read, band[0].confidence,
                 band[1].type, band[1].color, band[1].engrColor, band[1].specFeat, band[1].leg, band[1].number, band[1].wearScore, band[1].read, band[1].confidence
@@ -122,34 +140,51 @@ function StintData() {
 
         // Trim all elements of each row
         const trimmedRows = rows.map(row => row.map(cell => cell.trim()));
+        const stintData = trimmedRows[1];
+
+        let index = 0;
+
+        let jsonData = {
+            id: stintData[index++],
+            obsInit: stintData[index++],
+            island: stintData[index++],
+            blind: stintData[index++],
+            timeStart: stintData[index++],
+            timeEnd: stintData[index++],
+            date: stintData[index++],
+            stintNotes: stintData[index++],
+            birdDetails: null,
+        };
 
         const feedingData = trimmedRows.slice(1).reduce((acc, row) => {
+            let i = index
+
             const data = {
-                species: row[6],
-                time: row[7],
-                loc: row[8],
-                prox: row[9],
-                birdNotes: row[10],
+                species: row[i++],
+                time: row[i++],
+                loc: row[i++],
+                prox: row[i++],
+                birdNotes: row[i++],
                 band: [{
-                    type: row[11],
-                    color: row[12],
-                    engrColor: row[13],
-                    specFeat: row[14],
-                    leg: row[15],
-                    number: row[16],
-                    wearScore: row[17],
-                    read: row[18],
-                    confidence: row[19],
+                    type: row[i++],
+                    color: row[i++],
+                    engrColor: row[i++],
+                    specFeat: row[i++],
+                    leg: row[i++],
+                    number: row[i++],
+                    wearScore: row[i++],
+                    read: row[i++],
+                    confidence: row[i++],
                 }, {
-                    type: row[20],
-                    color: row[21],
-                    engrColor: row[22],
-                    specFeat: row[23],
-                    leg: row[24],
-                    number: row[25],
-                    wearScore: row[26],
-                    read: row[27],
-                    confidence: row[28],
+                    type: row[i++],
+                    color: row[i++],
+                    engrColor: row[i++],
+                    specFeat: row[i++],
+                    leg: row[i++],
+                    number: row[i++],
+                    wearScore: row[i++],
+                    read: row[i++],
+                    confidence: row[i++],
                 }]
             };
 
@@ -158,17 +193,7 @@ function StintData() {
             return acc;
         }, []);
 
-        const stintData = trimmedRows[1];
-
-        const jsonData = {
-            obsInit: stintData[0],
-            location: stintData[1],
-            timeStart: stintData[2],
-            timeEnd: stintData[3],
-            date: stintData[4],
-            stintNotes: stintData[5],
-            birdDetails: feedingData,
-        };
+        jsonData.birdDetails = feedingData;
 
         return jsonData;
     }
@@ -183,11 +208,14 @@ function StintData() {
         let data = { ...form.getFieldsValue(), birdDetails: birdDetails };
         data.date = formatDate(data.date);
 
+        const id = `${data.timeStart}-${data.timeEnd}-${data.date}-${data.obsInit}-${data.island}.csv`;
+        data.id = hash(id);
+
         csv += jsonToCSV(data);
 
         const file = new Blob([csv], { type: 'text/csv;charset=utf-8' });
 
-        saveAs(file, `${data.timeStart}-${data.timeEnd}-${data.date}-${data.obsInit}-${data.location}.csv`);
+        saveAs(file, id);
 
         message.success("Dowloaded Successfully!");
     }
@@ -311,7 +339,7 @@ function StintData() {
         return (
             <div style={styles.container}>
                 <Title level={3} style={{ marginBottom: '20px' }}>
-                    Resighting Form
+                    Stint Form
                 </Title>
 
                 <Form
@@ -332,12 +360,25 @@ function StintData() {
                                 <Input style={styles.input} size="small" />
                             </Item>
 
-                            <Item
-                                label="Location"
-                                name="location"
-                                rules={[{ required: true, message: 'Please enter Location!' }]}
-                            >
-                                <Input style={styles.input} size="small" />
+                            <div style={styles.wrapper}>
+                                <Item
+                                    label="Island"
+                                    name="island"
+                                    rules={[{ required: true, message: 'Please enter a value!' }]}
+                                >
+                                    <Input style={styles.input} size="small" />
+                                </Item>
+                                <Item
+                                    label="Blind"
+                                    name="blind"
+                                    rules={[{ required: true, message: 'Please enter a value!' }]}
+                                >
+                                    <Input style={styles.input} size="small" />
+                                </Item>
+                            </div>
+
+                            <Item name='stintNotes' label='Notes'>
+                                <Input.TextArea rows={5} style={styles.text} />
                             </Item>
                         </Col>
                         <Col span={12} xs={24} sm={12} md={12} lg={12} xl={12}>

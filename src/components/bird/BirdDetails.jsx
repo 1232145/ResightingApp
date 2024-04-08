@@ -309,7 +309,7 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand }) {
         return (
             <div style={styles.container}>
                 <Title level={3} style={{ marginBottom: '20px' }}>
-                    Feeding form {index + 1}
+                    Resighting Form {index + 1}
                 </Title>
 
                 <Form
@@ -395,7 +395,7 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand }) {
                                                     style={buttonStyles}
                                                     onClick={() => switchData(idx)}
                                                 >
-                                                    Data {idx + 1}
+                                                    Bird {idx + 1}
                                                 </Button>
                                             )
                                         }
