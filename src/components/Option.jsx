@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from 'antd';
+import { Button, Dropdown, Menu } from 'antd';
 
 const styles = {
     button: {
@@ -17,22 +17,72 @@ const styles = {
 }
 
 function Options({ options, selected, setData }) {
+    const limit = 6;
+
+    const handleItemClick = (item) => {
+        setData(item);
+    };
+
+    const renderOptions = () => {
+        if (options.length <= limit) {
+            return options.map((item) => (
+                <Button
+                    key={item}
+                    style={{
+                        ...styles.button,
+                        ...(selected === item && styles.highlight),
+                    }}
+                    onClick={() => handleItemClick(item)}
+                >
+                    {item}
+                </Button>
+            ));
+        } else {
+            const menu = (
+                <Menu>
+                    {options.slice(limit).map((item) => (
+                        <Menu.Item
+                            style={{
+                                ...(selected === item && styles.highlight),
+                            }}
+                            key={item}
+                            onClick={() => handleItemClick(item)}
+                        >
+                            {item}
+                        </Menu.Item>
+                    ))}
+                </Menu>
+            );
+
+            return (
+                <>
+                    {options.slice(0, limit).map((item) => (
+                        <Button
+                            key={item}
+                            style={{
+                                ...styles.button,
+                                ...(selected === item && styles.highlight),
+                            }}
+                            onClick={() => handleItemClick(item)}
+                        >
+                            {item}
+                        </Button>
+                    ))}
+                    <Dropdown
+                        overlay={menu}
+                        placement="bottomLeft"
+                        trigger={['click']}
+                    >
+                        <Button style={{ ...styles.button }}>More Options</Button>
+                    </Dropdown>
+                </>
+            );
+        }
+    };
+
     return (
         <>
-            {
-                options.map((item, index) =>
-                    <Button
-                        style={{
-                            ...styles.button,
-                            ...(selected === item && styles.highlight),
-                        }}
-                        onClick={() => setData(item)}
-                        key={index}
-                    >
-                        {item}
-                    </Button>
-                )
-            }
+            {renderOptions()}
         </>
     );
 }

@@ -6,6 +6,23 @@ import { Options } from '../Option';
 const { Item } = Form;
 const bandColors = ["M", "W", "BLK", "Y", "BLU", "BRW", "R", "G", "LG", "BrB", "ObO", "Or"];
 
+const info = (
+    <div>
+        <p>M: metal</p>
+        <p>W: white</p>
+        <p>BLK: black</p>
+        <p>Y: yellow</p>
+        <p>BLU: blue</p>
+        <p>BRW: brown</p>
+        <p>R: red</p>
+        <p>G: green</p>
+        <p>LG: light green</p>
+        <p>BrB: blue/red/blue horizontal stripes</p>
+        <p>ObO: orange/black/orange horizontal stripes</p>
+        <p>Or: orange</p>
+    </div>
+)
+
 function BandColor({ form, styles }) {
     const [item, setItem] = useState(null);
 
@@ -16,7 +33,7 @@ function BandColor({ form, styles }) {
 
     return (
         <Col span={12} style={styles.col}>
-            <LabelInfo label={'Band Color'} info='To be added' required={true} styles={styles} />
+            <LabelInfo title="Band Color" label={'BCLr'} info={info} required={true} styles={styles} />
             <Item
                 name={'color'}
                 rules={[{ required: true, message: 'Please enter a value!' }]}

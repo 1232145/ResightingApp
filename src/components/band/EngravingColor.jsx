@@ -6,6 +6,19 @@ import { Options } from '../Option';
 const { Item } = Form;
 const engravingColors = ["M", "W", "BLK", "BLU", "BRW", "None", "R", "Y"];
 
+const info = (
+    <div>
+        <p>M: metal</p>
+        <p>W: white</p>
+        <p>BLK: black</p>
+        <p>BLU: blue</p>
+        <p>BRW: brown</p>
+        <p>None: No Engraving (coil or Bicolor)</p>
+        <p>R: red</p>
+        <p>Y: yellow</p>
+    </div>
+)
+
 function EngravingColor({ form, styles }) {
     const [item, setItem] = useState(null);
 
@@ -16,7 +29,7 @@ function EngravingColor({ form, styles }) {
 
     return (
         <Col span={12} style={styles.col}>
-            <LabelInfo label={'Engr. Color'} info='To be added' required={true} styles={styles} />
+            <LabelInfo title="Engraving Color" label={'ECLr'} info={info} required={true} styles={styles} />
             <Item
                 name={'engrColor'}
                 rules={[{ required: true, message: 'Please enter a value!' }]}

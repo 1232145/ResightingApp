@@ -4,7 +4,15 @@ import { Form, Input } from 'antd';
 import { Options } from '../Option';
 
 const { Item } = Form;
-const speciesOptions = ["ATPU", "ARTE"];
+const speciesOptions = ["COTE", "COEI", "BLGU"];
+
+const info = (
+    <div>
+        <p>COTE: common terns</p>
+        <p>COEI: common eiders</p>
+        <p>BLGU: black guillemot</p>
+    </div>
+);
 
 function Species({ form, styles }) {
     const [item, setItem] = useState(null);
@@ -16,7 +24,7 @@ function Species({ form, styles }) {
 
     return (
         <div>
-            <LabelInfo label='Species' info='Info to be added' required={true} styles={styles} />
+            <LabelInfo title={"Species"} label='Species' info={info} required={true} styles={styles} />
             <Item
                 name="species"
                 rules={[{ required: true, message: 'Please enter species!' }]}

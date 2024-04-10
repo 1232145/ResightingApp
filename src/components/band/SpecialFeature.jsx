@@ -6,6 +6,20 @@ import { Options } from '../Option';
 const { Item } = Form;
 const specialFeatures = ["DAR", "DBR", "HTwR", "HThR", "VR", "HNR", "VNR", "NC", "NBi"]
 
+const info = (
+    <div>
+        <p>DAR: Dots Above Repeated</p>
+        <p>DBR: Dots Below Repeated</p>
+        <p>HTwR: Horizontal Twice Repeated</p>
+        <p>HThR: Horizontal Thrice Repeated</p>
+        <p>VR: Vertical Repeated</p>
+        <p>HNR: Horiz. NOT Repeated</p>
+        <p>VNR: Vert. NOT Repeated</p>
+        <p>NC: None Coil</p>
+        <p>NBi: None Bicolor</p>
+    </div>
+)
+
 function BandColor({ form, styles }) {
     const [item, setItem] = useState(null);
 
@@ -16,7 +30,7 @@ function BandColor({ form, styles }) {
 
     return (
         <Col span={12} style={styles.col}>
-            <LabelInfo label={'Spec. Feat'} info='To be added' required={true} styles={styles} />
+            <LabelInfo title="Special Features" label={'Sfeat'} info={info} required={true} styles={styles} />
             <Item
                 name={'specFeat'}
                 rules={[{ required: true, message: 'Please enter a value!' }]}

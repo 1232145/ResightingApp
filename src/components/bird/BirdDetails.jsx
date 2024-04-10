@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Typography, Row, Col, Tooltip, Modal } from 'antd';
 import { PlusOutlined, MinusOutlined, CloseOutlined } from '@ant-design/icons';
 import Band from '../band/Band';
-import { LabelInfo } from '../InfoBox';
 import Species from './Species';
 import Prox from './Prox';
+import Location from './Location';
 import ToggleButton from '../ToggleButton';
 
 const { Item } = Form;
@@ -123,7 +123,7 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand }) {
     const [form] = Form.useForm();
     const [isBand, setIsBand] = useState(false); //toggleClosed between feeding and band tab
     const [index, setIndex] = useState(0); //feeding index
-    const [toggleClosed, setToggleClosed] = useState(true);
+    const [toggleClosed, setToggleClosed] = useState(false);
     const [closedIndices, setClosedIndices] = useState([]);
 
     //handle time stamp
@@ -411,13 +411,7 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand }) {
                                 <Species form={form} styles={styles} />
                             </Col>
                             <Col span={12} style={styles.col}>
-                                <LabelInfo label='Loc' info='Info to be added' required={true} styles={styles} />
-                                <Item
-                                    name='loc'
-                                    rules={[{ required: true, message: 'Please enter a value!' }]}
-                                >
-                                    <Input value={form.getFieldValue('loc')} />
-                                </Item>
+                                <Location form={form} styles={styles} />
                             </Col>
                             <Col span={12} style={styles.col}>
                                 <Prox form={form} styles={styles} />
@@ -460,3 +454,7 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand }) {
 }
 
 export default BirdDetails;
+
+//TODO:
+//Make loc component
+//Fix Prox

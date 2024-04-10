@@ -6,6 +6,16 @@ import { Options } from '../Option';
 const { Item } = Form;
 const wearScores = ["1", "2", "3", "4", "U"];
 
+const info = (
+    <div>
+        <p>1: No Wear</p>
+        <p>2: Little Wear</p>
+        <p>3: Some Wear/difficult to read</p>
+        <p>4: One or more numbers unreadable</p>
+        <p>U: Unknown</p>
+    </div>
+)
+
 function WearScore({ form, styles }) {
     const [item, setItem] = useState(null);
 
@@ -16,7 +26,7 @@ function WearScore({ form, styles }) {
 
     return (
         <Col span={12} style={styles.col}>
-            <LabelInfo label={'Wear Score'} info='To be added' required={true} styles={styles} />
+            <LabelInfo title="Wear Score" label={'Wear Score'} info={info} required={true} styles={styles} />
             <Item
                 name={'wearScore'}
                 rules={[{ required: true, message: 'Please enter a value!' }]}

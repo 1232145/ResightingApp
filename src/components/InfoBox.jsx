@@ -2,21 +2,21 @@ import React from 'react';
 import { Popover, Button } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 
-const InfoBox = ({ info }) => {
+const InfoBox = ({ info, title }) => {
   const content = (
     <div>
-      <p>{info}</p>
+      {info}
     </div>
   );
 
   return (
-    <Popover content={content} title="Option Details">
+    <Popover content={content} title={title}>
       <Button type="text" icon={<InfoCircleOutlined />} />
     </Popover>
   );
 };
 
-const LabelInfo = ({ label, info, required, styles }) => {
+const LabelInfo = ({ title, label, info, required, styles }) => {
   return (
     <div style={styles?.label}>
       <label style={styles?.text}>
@@ -28,7 +28,7 @@ const LabelInfo = ({ label, info, required, styles }) => {
           </span>
         }
       </label>
-      <InfoBox info={info} />
+      <InfoBox info={info} title={title} />
     </div>
   )
 }
