@@ -1,5 +1,8 @@
-import React from 'react';
-import { Button, Dropdown, Menu } from 'antd';
+import React, { useState } from 'react';
+import { Button, Dropdown, Menu, Input } from 'antd';
+
+const { Search } = Input;
+const limit = 5;
 
 const styles = {
     button: {
@@ -17,15 +20,24 @@ const styles = {
 }
 
 function Options({ options, selected, setData }) {
-    const limit = 6;
+    const [searchValue, setSearchValue] = useState('');
 
     const handleItemClick = (item) => {
         setData(item);
+        setSearchValue('');
     };
 
+    const handleSearch = (value) => {
+        setSearchValue(value);
+    };
+
+    const filteredOptions = options.filter((item) =>
+        item.toString().toLowerCase().includes(searchValue.toLowerCase())
+    );
+
     const renderOptions = () => {
-        if (options.length <= limit) {
-            return options.map((item) => (
+        if (filteredOptions.length <= limit) {
+            return filteredOptions.map((item) => (
                 <Button
                     key={item}
                     style={{
@@ -40,7 +52,7 @@ function Options({ options, selected, setData }) {
         } else {
             const menu = (
                 <Menu>
-                    {options.slice(limit).map((item) => (
+                    {filteredOptions.slice(limit).map((item) => (
                         <Menu.Item
                             style={{
                                 ...(selected === item && styles.highlight),
@@ -56,7 +68,7 @@ function Options({ options, selected, setData }) {
 
             return (
                 <>
-                    {options.slice(0, limit).map((item) => (
+                    {filteredOptions.slice(0, limit).map((item) => (
                         <Button
                             key={item}
                             style={{
@@ -82,6 +94,16 @@ function Options({ options, selected, setData }) {
 
     return (
         <>
+            {
+                options.length > limit && (
+                    <Search
+                        placeholder="Search..."
+                        value={searchValue}
+                        onChange={(e) => handleSearch(e.target.value)}
+                        style={{ marginBottom: '10px' }}
+                    />
+                )
+            }
             {renderOptions()}
         </>
     );

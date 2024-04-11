@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { LabelInfo } from '../InfoBox';
-import { Form, InputNumber } from 'antd';
+import { Form, Input } from 'antd';
 import { Options } from '../Option';
 
 const { Item } = Form;
@@ -38,7 +38,7 @@ function Location({ form, styles }) {
                 name='loc'
                 rules={[{ required: true, message: 'Please enter a value!' }]}
             >
-                <InputNumber value={form.getFieldValue('loc')} style={{ width: '100%' }} />
+                <Input value={form.getFieldValue('loc')} />
             </Item>
 
             <div style={styles.options}>

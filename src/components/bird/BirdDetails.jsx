@@ -454,7 +454,3 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand }) {
 }
 
 export default BirdDetails;
-
-//TODO:
-//Make loc component
-//Fix Prox

@@ -67,7 +67,7 @@ const initFeeding = {
     species: '',
     time: '',
     loc: '',
-    prox: 0,
+    prox: '',
     birdNotes: '',
     band: [{ ...initBand }, { ...initBand }]
 };
@@ -97,7 +97,7 @@ function StintData() {
 
     function hash(str) {
         let hash = 5381;
-        
+
         for (let i = 0; i < str.length; i++) {
             hash = (hash * 33) ^ str.charCodeAt(i);
         }
@@ -229,31 +229,40 @@ function StintData() {
 
     //handle import csv file to this tablet
     const handleFileUpload = (info) => {
-        // const file = event.target.files[0];
-        const file = info.file;
+        Modal.confirm({
+            title: 'Are you sure you want to import data? This will remove all current data',
+            content: 'This action cannot be undone.',
+            onOk: () => {
+                // const file = event.target.files[0];
+                const file = info.file;
 
-        if (!file) return;
+                if (!file) return;
 
-        const reader = new FileReader();
+                const reader = new FileReader();
 
-        reader.onload = (e) => {
-            const csv = e.target.result;
-            let data = csvToJson(csv);
+                reader.onload = (e) => {
+                    const csv = e.target.result;
+                    let data = csvToJson(csv);
 
-            setBirdDetails(data.birdDetails);
+                    setBirdDetails(data.birdDetails);
 
-            data.date = moment(data.date, 'MM/DD/YYYY');
+                    data.date = moment(data.date, 'MM/DD/YYYY');
 
-            form.setFieldsValue(data);
-            message.success("Uploaded Successfully!");
-        };
+                    form.setFieldsValue(data);
+                    message.success("Uploaded Successfully!");
+                };
 
-        reader.onerror = () => {
-            alert('Error reading the CSV file.');
-            message.error("Upload Failed!");
-        };
+                reader.onerror = () => {
+                    alert('Error reading the CSV file.');
+                    message.error("Upload Failed!");
+                };
 
-        reader.readAsText(file);
+                reader.readAsText(file);
+            },
+            onCancel: () => {
+
+            }
+        })
     }
 
     //handle set current time button
@@ -472,7 +481,4 @@ export default StintData;
 
 //TODO: 
 //Show data
-//Drop down buttons and sorted button
-
-//ERROR:
-//Import: prox does not highlight
+//Sorted button

@@ -80,6 +80,15 @@ function Band({ index, initBand, setIsBand, data, setData, styles }) {
               <Input.TextArea rows={5} style={styles.text} />
             </Item> */}
           {/* </div> */}
+          <div>
+            <LabelInfo label="Band Number" info='To be added' required={true} styles={styles} />
+            <Item
+              name='number'
+              rules={[{ required: true, message: 'Please enter a value!' }]}
+            >
+              <Input value={form.getFieldValue('number')} />
+            </Item>
+          </div>
 
           <div style={styles.rightTop}>
             <div>Select band number:</div>
@@ -106,7 +115,7 @@ function Band({ index, initBand, setIsBand, data, setData, styles }) {
 
         <div style={styles.botbox}>
           <Row>
-            <BandType form={form} styles={styles}/>
+            <BandType form={form} styles={styles} />
             <BandColor form={form} styles={styles} />
             <EngravingColor form={form} styles={styles} />
             <SpecialFeature form={form} styles={styles} />
@@ -114,16 +123,6 @@ function Band({ index, initBand, setIsBand, data, setData, styles }) {
             <WearScore form={form} styles={styles} />
             <BandRead form={form} styles={styles} />
             <BandConfidence form={form} styles={styles} />
-
-            <Col span={12} style={styles.col}>
-              <LabelInfo label="Band Number" info='To be added' required={true} styles={styles} />
-              <Item
-                name='number'
-                rules={[{ required: true, message: 'Please enter a value!' }]}
-              >
-                <Input value={form.getFieldValue('number')} />
-              </Item>
-            </Col>
           </Row>
         </div>
 

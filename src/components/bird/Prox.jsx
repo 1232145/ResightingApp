@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { LabelInfo } from '../InfoBox';
-import { Form, InputNumber } from 'antd';
+import { Form, Input } from 'antd';
 import { Options } from '../Option';
 
 const { Item } = Form;
-const proxOptions = [1, 2, 3, 4, 5, 6, 7, 8];
+const proxOptions = ["1", "2", "3", "4", "5", "6", "7", "8"];
 
 const info = (
     <div>
@@ -34,7 +34,7 @@ function Prox({ form, styles }) {
                 name='prox'
                 rules={[{ required: true, message: 'Please enter a value!' }]}
             >
-                <InputNumber value={form.getFieldValue('prox')} style={{ width: '100%' }} />
+                <Input value={form.getFieldValue('prox')} style={{ width: '100%' }} />
             </Item>
 
             <div style={styles.options}>
