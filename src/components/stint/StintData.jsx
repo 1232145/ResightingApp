@@ -3,6 +3,7 @@ import { saveAs } from 'file-saver';
 import { Form, Input, Button, DatePicker, Row, Col, Typography, Upload, message, Modal } from 'antd';
 import BirdDetails from '../bird/BirdDetails';
 import moment from 'moment';
+import PreviewData from './PreviewData';
 
 const { Item } = Form;
 const { Title } = Typography;
@@ -20,7 +21,7 @@ const styles = {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        minHeight: '75vh',
+        minHeight: '50vh',
         flexDirection: 'column',
     },
 
@@ -95,8 +96,9 @@ function StintData() {
     const [isFeeding, setIsFeeding] = useState(false); //toggle between stint and feeding
     const [isModalVisible, setIsModalVisible] = useState(false); //exit confirmation
     const [preview, setPreview] = useState(false);
+    const [previewData, setPreviewData] = useState(null);
 
-    function hash(str) {
+    const hash = (str) => {
         let hash = 5381;
 
         for (let i = 0; i < str.length; i++) {
@@ -132,7 +134,7 @@ function StintData() {
     }
 
     //convert csv to json file
-    function csvToJson(csv) {
+    const csvToJson = (csv) => {
         const rows = csv.split('\n').map(row => row.split(','));
 
         if (rows.length < 2) {
@@ -199,22 +201,60 @@ function StintData() {
         return jsonData;
     }
 
-    //handle save data to csv file button
-    const handleSave = () => {
-        if (form.getFieldValue('timeEnd') === '') {
-            setCurrentTime("timeEnd");
-        }
+    //handle set current time button
+    const setCurrentTime = (field) => {
+        const currentTime = new Date();
+        // const year = currentTime.getFullYear();
+        // const month = (currentTime.getMonth() + 1).toString().padStart(2, '0');
+        // const day = currentTime.getDate().toString().padStart(2, '0');
+        const hours = currentTime.getHours().toString().padStart(2, '0');
+        const minutes = currentTime.getMinutes().toString().padStart(2, '0');
+        const time = `${hours}:${minutes}`;
 
-        let csv = '';
+        form.setFieldValue(field, time);
+    }
+
+    const isEqual = (obj1, obj2) => {
+        // Shallow comparison for the band property
+        const band1 = JSON.stringify(obj1.band);
+        const band2 = JSON.stringify(obj2.band);
+
+        // Compare other properties
+        const otherPropsEqual = Object.keys(obj1).every(key => obj1[key] === obj2[key]);
+
+        // Compare bands
+        return band1 === band2 && otherPropsEqual;
+    }
+
+    const getData = () => {
         let data = { ...form.getFieldsValue(), birdDetails: birdDetails };
         data.date = formatDate(data.date);
 
         const id = `${data.timeStart}-${data.timeEnd}-${data.date}-${data.obsInit}-${data.island}.csv`;
         data.id = hash(id);
 
+        return data;
+    }
+
+    //handle save data to csv file button
+    const handleSave = () => {
+        if (birdDetails.length <= 1 && isEqual(birdDetails[0], initFeeding)) {
+            message.error("Data missing, please check again!");
+            return;
+        }
+
+        if (form.getFieldValue('timeEnd') === '') {
+            setCurrentTime("timeEnd");
+        }
+
+        let csv = '';
+        let data = getData();
+
         csv += jsonToCSV(data);
 
         const file = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+
+        const id = `${data.timeStart}-${data.timeEnd}-${data.date}-${data.obsInit}-${data.island}.csv`;
 
         saveAs(file, id);
 
@@ -251,6 +291,8 @@ function StintData() {
 
                     form.setFieldsValue(data);
                     message.success("Uploaded Successfully!");
+
+                    setPreview(false);
                 };
 
                 reader.onerror = () => {
@@ -264,19 +306,6 @@ function StintData() {
 
             }
         })
-    }
-
-    //handle set current time button
-    const setCurrentTime = (field) => {
-        const currentTime = new Date();
-        // const year = currentTime.getFullYear();
-        // const month = (currentTime.getMonth() + 1).toString().padStart(2, '0');
-        // const day = currentTime.getDate().toString().padStart(2, '0');
-        const hours = currentTime.getHours().toString().padStart(2, '0');
-        const minutes = currentTime.getMinutes().toString().padStart(2, '0');
-        const time = `${hours}:${minutes}`;
-
-        form.setFieldValue(field, time);
     }
 
     /**
@@ -298,6 +327,7 @@ function StintData() {
 
     const handlePreview = () => {
         setPreview(prev => !prev);
+        setPreviewData(getData());
     }
 
     // When users accidentally close the app, ask for confirmation
@@ -347,134 +377,136 @@ function StintData() {
 
     if (!isFeeding) {
         return (
-            <div style={styles.container}>
-                <Title level={3} style={{ marginBottom: '20px' }}>
-                    Stint Form
-                </Title>
+            <>
+                <div style={styles.container}>
+                    <Title level={3} style={{ marginBottom: '20px' }}>
+                        Stint Form
+                    </Title>
 
-                <Form
-                    form={form}
-                    name="stintData"
-                    onFinish={handleSave}
-                    labelCol={{ xs: 24, sm: 8 }} // Responsive label column
-                    wrapperCol={{ xs: 24, sm: 16 }} // Responsive wrapper column
-                    style={styles.form}
-                >
-                    <Row gutter={24}>
-                        <Col span={12} xs={24} sm={12} md={12} lg={12} xl={12}>
-                            <Item
-                                label="Observation Init"
-                                name="obsInit"
-                                rules={[{ required: true, message: 'Please enter a value!' }]}
-                            >
-                                <Input style={styles.input} size="small" />
-                            </Item>
-
-                            <div style={styles.wrapper}>
+                    <Form
+                        form={form}
+                        name="stintData"
+                        onFinish={handleSave}
+                        labelCol={{ xs: 24, sm: 8 }} // Responsive label column
+                        wrapperCol={{ xs: 24, sm: 16 }} // Responsive wrapper column
+                        style={styles.form}
+                    >
+                        <Row gutter={24}>
+                            <Col span={12} xs={24} sm={12} md={12} lg={12} xl={12}>
                                 <Item
-                                    label="Island"
-                                    name="island"
+                                    label="Observation Init"
+                                    name="obsInit"
                                     rules={[{ required: true, message: 'Please enter a value!' }]}
                                 >
-                                    <Input style={styles.input} size="small" />
+                                    <Input style={styles.input} size="small" onChange={() => setPreview(false)} />
                                 </Item>
-                                <Item
-                                    label="Blind"
-                                    name="blind"
-                                    rules={[{ required: true, message: 'Please enter a value!' }]}
+
+                                <div style={styles.wrapper}>
+                                    <Item
+                                        label="Island"
+                                        name="island"
+                                        rules={[{ required: true, message: 'Please enter a value!' }]}
+                                    >
+                                        <Input style={styles.input} size="small" onChange={() => setPreview(false)} />
+                                    </Item>
+                                    <Item
+                                        label="Blind"
+                                        name="blind"
+                                        rules={[{ required: true, message: 'Please enter a value!' }]}
+                                    >
+                                        <Input style={styles.input} size="small" onChange={() => setPreview(false)} />
+                                    </Item>
+                                </div>
+
+                                <Item name='stintNotes' label='Notes'>
+                                    <Input.TextArea rows={5} style={styles.text} onChange={() => setPreview(false)} />
+                                </Item>
+                            </Col>
+                            <Col span={12} xs={24} sm={12} md={12} lg={12} xl={12}>
+                                <div style={styles.buttonContainer}>
+                                    <Item
+                                        label="Time Start"
+                                        name="timeStart"
+                                        style={{ margin: '0px' }}
+                                        labelCol={{ xs: 24, sm: 8, md: 8, lg: 8, xl: 8 }} // Responsive label column
+                                        wrapperCol={{ xs: 24, sm: 16 }} // Responsive wrapper column
+                                    >
+                                        <Input value={form.getFieldValue('timeStart')} onChange={() => setPreview(false)} />
+                                    </Item>
+
+                                    <Button onClick={() => setCurrentTime("timeStart")} size="small" style={styles.timeButton}>
+                                        Start time
+                                    </Button>
+                                </div>
+
+                                <div style={styles.buttonContainer}>
+                                    <Item
+                                        label="Time End"
+                                        name="timeEnd"
+                                        style={{ margin: '0px' }}
+                                        labelCol={{ xs: 24, sm: 8, md: 8, lg: 8, xl: 8 }} // Responsive label column
+                                        wrapperCol={{ xs: 24, sm: 16 }} // Responsive wrapper column
+                                    >
+                                        <Input value={form.getFieldValue('timeEnd')} onChange={() => setPreview(false)} />
+                                    </Item>
+
+                                    <Button onClick={() => setCurrentTime("timeEnd")} size="small" style={styles.timeButton}>
+                                        End time
+                                    </Button>
+                                </div>
+
+                                <div style={styles.buttonContainer}>
+                                    <Item
+                                        label="Date"
+                                        name="date"
+                                        rules={[{ type: 'date', required: true, message: 'Please select Date!' }]}
+                                    >
+                                        <DatePicker format="YYYY-MM-DD" style={styles.input} size="small" onChange={() => setPreview(false)} />
+                                    </Item>
+                                </div>
+                            </Col>
+                        </Row>
+
+                        <div>
+                            <div style={styles.buttonContainer}>
+                                <Button type="primary" htmlType="submit" style={{ marginRight: '10px' }}>
+                                    Save
+                                </Button>
+                                <Upload
+                                    style={{ maxWidth: '25px' }}
+                                    customRequest={handleFileUpload}
+                                    accept=".csv"
+                                    showUploadList={false}
+                                    beforeUpload={file => {
+                                        if (file.type !== "text/csv") {
+                                            message.error(`${file.name} is not a csv file`);
+                                            return Upload.LIST_IGNORE;
+                                        }
+                                        return true;
+                                    }}
                                 >
-                                    <Input style={styles.input} size="small" />
-                                </Item>
+                                    <Button type="primary">Import</Button>
+                                </Upload>
                             </div>
 
-                            <Item name='stintNotes' label='Notes'>
-                                <Input.TextArea rows={5} style={styles.text} />
-                            </Item>
-                        </Col>
-                        <Col span={12} xs={24} sm={12} md={12} lg={12} xl={12}>
                             <div style={styles.buttonContainer}>
-                                <Item
-                                    label="Time Start"
-                                    name="timeStart"
-                                    style={{ margin: '0px' }}
-                                    labelCol={{ xs: 24, sm: 8, md: 8, lg: 8, xl: 8 }} // Responsive label column
-                                    wrapperCol={{ xs: 24, sm: 16 }} // Responsive wrapper column
-                                >
-                                    <Input value={form.getFieldValue('timeStart')} />
-                                </Item>
-
-                                <Button onClick={() => setCurrentTime("timeStart")} size="small" style={styles.timeButton}>
-                                    Start time
+                                <Button onClick={() => setIsFeeding(true)}>Bird details</Button>
+                                <Button onClick={() => handlePreview()} type="primary" style={{ marginLeft: '10px', backgroundColor: 'green' }}>
+                                    Preview
                                 </Button>
                             </div>
-
-                            <div style={styles.buttonContainer}>
-                                <Item
-                                    label="Time End"
-                                    name="timeEnd"
-                                    style={{ margin: '0px' }}
-                                    labelCol={{ xs: 24, sm: 8, md: 8, lg: 8, xl: 8 }} // Responsive label column
-                                    wrapperCol={{ xs: 24, sm: 16 }} // Responsive wrapper column
-                                >
-                                    <Input value={form.getFieldValue('timeEnd')} />
-                                </Item>
-
-                                <Button onClick={() => setCurrentTime("timeEnd")} size="small" style={styles.timeButton}>
-                                    End time
-                                </Button>
-                            </div>
-
-                            <div style={styles.buttonContainer}>
-                                <Item
-                                    label="Date"
-                                    name="date"
-                                    rules={[{ type: 'date', required: true, message: 'Please select Date!' }]}
-                                >
-                                    <DatePicker format="YYYY-MM-DD" style={styles.input} size="small" />
-                                </Item>
-                            </div>
-                        </Col>
-                    </Row>
-
-                    <div>
-                        <div style={styles.buttonContainer}>
-                            <Button type="primary" htmlType="submit" style={{ marginRight: '10px' }}>
-                                Save
-                            </Button>
-                            <Upload
-                                style={{ maxWidth: '25px' }}
-                                customRequest={handleFileUpload}
-                                accept=".csv"
-                                showUploadList={false}
-                                beforeUpload={file => {
-                                    if (file.type !== "text/csv") {
-                                        message.error(`${file.name} is not a csv file`);
-                                        return Upload.LIST_IGNORE;
-                                    }
-                                    return true;
-                                }}
-                            >
-                                <Button type="primary">Import</Button>
-                            </Upload>
                         </div>
-
-                        <div style={styles.buttonContainer}>
-                            <Button onClick={() => setIsFeeding(true)}>Bird details</Button>
-                            <Button onClick={() => handlePreview()} type="primary" style={{ marginLeft: '10px', backgroundColor: 'green' }}>
-                                Preview
-                            </Button>
-                        </div>
-                    </div>
-                </Form>
+                    </Form>
+                </div>
 
                 {
                     preview && (
-                        <div>
-                            LAMO
-                        </div>
+                        <>
+                            <PreviewData data={previewData} />
+                        </>
                     )
                 }
-            </div>
+            </>
         );
     }
     else {

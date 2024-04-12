@@ -198,8 +198,9 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand }) {
                     setClosedIndices([...closedIndices.filter(item => item !== index)]);
 
                     //reset inputs and index
-                    setIndex(index - 1);
-                    form.setFieldsValue(data[index - 1]);
+                    const nextIndex = (index + 1) % updated.length;
+                    setIndex(nextIndex);
+                    form.setFieldsValue(updated[nextIndex]);
                 },
                 onCancel: () => {
 
