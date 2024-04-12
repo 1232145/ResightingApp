@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Dropdown, Menu, Input } from 'antd';
 
 const { Search } = Input;
@@ -24,7 +24,6 @@ function Options({ options, selected, setData }) {
 
     const handleItemClick = (item) => {
         setData(item);
-        setSearchValue('');
     };
 
     const handleSearch = (value) => {
@@ -35,6 +34,10 @@ function Options({ options, selected, setData }) {
         item.toString().toLowerCase().includes(searchValue.toLowerCase())
     );
 
+    useEffect(() => {
+        setSearchValue('');
+    }, [selected])
+
     const renderOptions = () => {
         if (filteredOptions.length <= limit) {
             return filteredOptions.map((item) => (
@@ -42,7 +45,7 @@ function Options({ options, selected, setData }) {
                     key={item}
                     style={{
                         ...styles.button,
-                        ...(selected === item && styles.highlight),
+                        ...(selected.toLowerCase() === item.toLowerCase() && styles.highlight),
                     }}
                     onClick={() => handleItemClick(item)}
                 >
@@ -55,7 +58,7 @@ function Options({ options, selected, setData }) {
                     {filteredOptions.slice(limit).map((item) => (
                         <Menu.Item
                             style={{
-                                ...(selected === item && styles.highlight),
+                                ...(selected.toLowerCase() === item.toLowerCase() && styles.highlight),
                             }}
                             key={item}
                             onClick={() => handleItemClick(item)}
@@ -73,7 +76,7 @@ function Options({ options, selected, setData }) {
                             key={item}
                             style={{
                                 ...styles.button,
-                                ...(selected === item && styles.highlight),
+                                ...(selected.toLowerCase() === item.toLowerCase() && styles.highlight),
                             }}
                             onClick={() => handleItemClick(item)}
                         >

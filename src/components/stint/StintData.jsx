@@ -94,6 +94,7 @@ function StintData() {
 
     const [isFeeding, setIsFeeding] = useState(false); //toggle between stint and feeding
     const [isModalVisible, setIsModalVisible] = useState(false); //exit confirmation
+    const [preview, setPreview] = useState(false);
 
     function hash(str) {
         let hash = 5381;
@@ -296,7 +297,7 @@ function StintData() {
     };
 
     const handlePreview = () => {
-
+        setPreview(prev => !prev);
     }
 
     // When users accidentally close the app, ask for confirmation
@@ -465,6 +466,14 @@ function StintData() {
                         </div>
                     </div>
                 </Form>
+
+                {
+                    preview && (
+                        <div>
+                            LAMO
+                        </div>
+                    )
+                }
             </div>
         );
     }

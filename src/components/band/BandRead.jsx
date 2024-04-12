@@ -14,14 +14,18 @@ function BandRead({ form, styles }) {
         setItem(item);
     }
 
+    const handleChange = (value) => {
+        setItem(value);
+    }
+
     return (
         <Col span={12} style={styles.col}>
             <LabelInfo label={'Read'} info='To be added' required={true} styles={styles} />
             <Item
                 name={'read'}
-                rules={[{ required: true, message: 'Please enter a value!' }]}
+                rules={[{ required: true, message: '' }]}
             >
-                <Input value={form.getFieldValue('read')} />
+                <Input value={form.getFieldValue('read')} onChange={(e) => handleChange(e.currentTarget.value)} />
             </Item>
 
             <div style={styles.options}>

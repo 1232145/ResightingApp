@@ -25,14 +25,18 @@ function BandType({ form, styles }) {
         setItem(item);
     }
 
+    const handleChange = (value) => {
+        setItem(value);
+    }
+
     return (
         <Col span={12} style={styles.col}>
             <LabelInfo title="Band Type" label={'Btype'} info={info} required={true} styles={styles} />
             <Item
                 name={'type'}
-                rules={[{ required: true, message: 'Please enter a value!' }]}
+                rules={[{ required: true, message: '' }]}
             >
-                <Input value={form.getFieldValue('type')} />
+                <Input value={form.getFieldValue('type')} onChange={(e) => handleChange(e.currentTarget.value)} />
             </Item>
 
             <div style={styles.options}>

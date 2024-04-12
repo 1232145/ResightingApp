@@ -14,14 +14,18 @@ function BandLeg({ form, styles }) {
         setItem(item);
     }
 
+    const handleChange = (value) => {
+        setItem(value);
+    }
+
     return (
         <Col span={12} style={styles.col}>
             <LabelInfo label={'Leg(L/R)'} info='To be added' required={true} styles={styles} />
             <Item
                 name={'leg'}
-                rules={[{ required: true, message: 'Please enter a value!' }]}
+                rules={[{ required: true, message: '' }]}
             >
-                <Input value={form.getFieldValue('leg')} />
+                <Input value={form.getFieldValue('leg')} onChange={(e) => handleChange(e.currentTarget.value)} />
             </Item>
 
             <div style={styles.options}>

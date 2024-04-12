@@ -24,14 +24,18 @@ function WearScore({ form, styles }) {
         setItem(item);
     }
 
+    const handleChange = (value) => {
+        setItem(value);
+    }
+
     return (
         <Col span={12} style={styles.col}>
             <LabelInfo title="Wear Score" label={'Wear Score'} info={info} required={true} styles={styles} />
             <Item
                 name={'wearScore'}
-                rules={[{ required: true, message: 'Please enter a value!' }]}
+                rules={[{ required: true, message: '' }]}
             >
-                <Input value={form.getFieldValue('wearScore')} />
+                <Input value={form.getFieldValue('wearScore')} onChange={(e) => handleChange(e.currentTarget.value)} />
             </Item>
 
             <div style={styles.options}>

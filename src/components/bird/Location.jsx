@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { LabelInfo } from '../InfoBox';
 import { Form, Input } from 'antd';
 import { Options } from '../Option';
@@ -31,14 +31,18 @@ function Location({ form, styles }) {
         setItem(item);
     }
 
+    const handleChange = (value) => {
+        setItem(value);
+    }
+
     return (
         <div>
             <LabelInfo title="Location" label='Loc' info={info} required={true} styles={styles} />
             <Item
                 name='loc'
-                rules={[{ required: true, message: 'Please enter a value!' }]}
+                rules={[{ required: true, message: '' }]}
             >
-                <Input value={form.getFieldValue('loc')} />
+                <Input value={form.getFieldValue('loc')} onChange={(e) => handleChange(e.currentTarget.value)} />
             </Item>
 
             <div style={styles.options}>

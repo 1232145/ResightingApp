@@ -31,14 +31,18 @@ function BandColor({ form, styles }) {
         setItem(item);
     }
 
+    const handleChange = (value) => {
+        setItem(value);
+    }
+
     return (
         <Col span={12} style={styles.col}>
             <LabelInfo title="Band Color" label={'BCLr'} info={info} required={true} styles={styles} />
             <Item
                 name={'color'}
-                rules={[{ required: true, message: 'Please enter a value!' }]}
+                rules={[{ required: true, message: '' }]}
             >
-                <Input value={form.getFieldValue('color')} />
+                <Input value={form.getFieldValue('color')} onChange={(e) => handleChange(e.currentTarget.value)} />
             </Item>
 
             <div style={styles.options}>

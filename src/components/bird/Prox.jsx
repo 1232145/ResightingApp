@@ -27,14 +27,18 @@ function Prox({ form, styles }) {
         setItem(item);
     }
 
+    const handleChange = (value) => {
+        setItem(value);
+    }
+
     return (
         <div>
             <LabelInfo title="Proximity" label='Prx' info={info} required={true} styles={styles} />
             <Item
                 name='prox'
-                rules={[{ required: true, message: 'Please enter a value!' }]}
+                rules={[{ required: true, message: '' }]}
             >
-                <Input value={form.getFieldValue('prox')} style={{ width: '100%' }} />
+                <Input value={form.getFieldValue('prox')} style={{ width: '100%' }} onChange={(e) => handleChange(e.currentTarget.value)} />
             </Item>
 
             <div style={styles.options}>

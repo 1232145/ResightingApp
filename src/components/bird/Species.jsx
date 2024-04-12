@@ -22,14 +22,18 @@ function Species({ form, styles }) {
         setItem(item);
     }
 
+    const handleChange = (value) => {
+        setItem(value);
+    }
+
     return (
         <div>
             <LabelInfo title={"Species"} label='Species' info={info} required={true} styles={styles} />
             <Item
                 name="species"
-                rules={[{ required: true, message: 'Please enter species!' }]}
+                rules={[{ required: true, message: '' }]}
             >
-                <Input value={form.getFieldValue('species')} />
+                <Input value={form.getFieldValue('species')} onChange={(e) => handleChange(e.currentTarget.value)} />
             </Item>
 
             <div style={styles.options}>

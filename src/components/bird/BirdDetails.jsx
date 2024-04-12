@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Typography, Row, Col, Tooltip, Modal } from 'antd';
-import { PlusOutlined, MinusOutlined, CloseOutlined } from '@ant-design/icons';
+import { PlusOutlined, MinusOutlined, CloseOutlined, UpOutlined } from '@ant-design/icons';
 import Band from '../band/Band';
 import Species from './Species';
 import Prox from './Prox';
@@ -125,6 +125,8 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand }) {
     const [index, setIndex] = useState(0); //feeding index
     const [toggleClosed, setToggleClosed] = useState(false);
     const [closedIndices, setClosedIndices] = useState([]);
+
+    const isClosed = closedIndices.includes(index);
 
     //handle time stamp
     const setCurrentTime = (field) => {
@@ -367,11 +369,11 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand }) {
                                 </Tooltip>
                                 <Tooltip title='Click to close the current data'>
                                     <Button
-                                        icon={<CloseOutlined />}
-                                        style={{ borderColor: '#ff4c00', color: '#ff4c00', margin: '5px 0px 5px 0px' }}
+                                        icon={isClosed ? <UpOutlined /> : <CloseOutlined />}
+                                        style={{ borderColor: isClosed ? 'green' : '#ff4c00', color: isClosed ? 'green' : '#ff4c00', margin: '5px 0px 5px 0px' }}
                                         onClick={() => closeData()}
                                     >
-                                        Closed
+                                        {isClosed ? 'Open' : 'Closed'}
                                     </Button>
                                 </Tooltip>
                                 <ToggleButton label="Hide Closed:" toggle={toggleClosed} setToggle={setToggleClosed} styles={styles.toggleBtn} />
@@ -380,15 +382,15 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand }) {
                             <div style={styles.dataContainer}>
                                 {
                                     data.map((_, idx) => {
-                                        let isClosed = closedIndices.includes(idx);
+                                        let thisClosed = closedIndices.includes(idx);
 
                                         const buttonStyles = {
                                             ...styles.button,
-                                            ...(isClosed && styles.closedButton),
-                                            ...(idx === index && (isClosed ? {...styles.highlight, backgroundColor: 'crimson'} : styles.highlight)),
+                                            ...(thisClosed && styles.closedButton),
+                                            ...(idx === index && (thisClosed ? {...styles.highlight, backgroundColor: 'crimson'} : styles.highlight)),
                                         };
 
-                                        if (!toggleClosed || !isClosed) {
+                                        if (!toggleClosed || !thisClosed) {
                                             return (
                                                 <Button
                                                     key={idx}
