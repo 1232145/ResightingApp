@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { LabelInfo } from '../InfoBox';
 import { Form, Input } from 'antd';
 import { Options } from '../Option';
 
 const { Item } = Form;
-const speciesOptions = ["COTE", "COEI", "BLGU"];
+const speciesOptions = ["ARTE", "ATPU", "COTE", "COEI", "BLGU", "RAZO", "COMU"];
 
 const info = (
     <div>

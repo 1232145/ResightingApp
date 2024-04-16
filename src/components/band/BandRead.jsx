@@ -4,7 +4,7 @@ import { Form, Input, Col } from 'antd';
 import { Options } from '../Option';
 
 const { Item } = Form;
-const read = [];
+const read = ['Full', 'Partial'];
 
 function BandRead({ form, styles }) {
     const [item, setItem] = useState(null);

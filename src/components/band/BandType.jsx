@@ -4,7 +4,7 @@ import { Form, Input, Col } from 'antd';
 import { Options } from '../Option';
 
 const { Item } = Form;
-const bandTypes = ["CC", "BC", "PFR", "NRM", "BBL", "RMFR"];
+const bandTypes = ["NRM", "BBL", "CC", "BC", "PFR", "RMFR"];
 
 const info = (
     <div>

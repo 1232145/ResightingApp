@@ -4,7 +4,7 @@ import { Form, Input, Col } from 'antd';
 import { Options } from '../Option';
 
 const { Item } = Form;
-const confidence = [];
+const confidence = ['Low', 'Medium', 'High'];
 
 function BandConfidence({ form, styles }) {
     const [item, setItem] = useState(null);

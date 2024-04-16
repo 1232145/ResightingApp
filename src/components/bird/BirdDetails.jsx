@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Button, Typography, Row, Col, Tooltip, Modal } from 'antd';
+import { Form, Input, Button, Typography, Row, Col, Tooltip, Modal, message } from 'antd';
 import { PlusOutlined, MinusOutlined, CloseOutlined, UpOutlined } from '@ant-design/icons';
 import Band from '../band/Band';
 import Species from './Species';
@@ -207,6 +207,9 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand }) {
                 }
             })
         }
+        else {
+            message.error("Cannot delete the only data!");
+        }
     }
 
     const closeData = () => {
@@ -263,6 +266,10 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand }) {
             content: 'This action cannot be undone.',
             onOk: () => {
                 form.setFieldsValue({ ...initFeeding });
+                let updated = [...data];
+                updated[index] = {...initFeeding};
+
+                setData(updated);
             },
             onCancel: () => {
 

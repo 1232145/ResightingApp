@@ -519,7 +519,3 @@ function StintData() {
 }
 
 export default StintData;
-
-//TODO: 
-//Show data
-//Sorted button
