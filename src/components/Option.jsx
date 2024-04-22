@@ -88,7 +88,7 @@ function Options({ options, selected, setData }) {
                         placement="bottomLeft"
                         trigger={['click']}
                     >
-                        <Button style={{ ...styles.button }}>More Options</Button>
+                        <Button style={{ ...styles.button }}>...</Button>
                     </Dropdown>
                 </>
             );

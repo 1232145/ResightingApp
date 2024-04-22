@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { LabelInfo } from '../InfoBox';
-import { Form, Input, Col } from 'antd';
+import { Form, Input, Col, Button } from 'antd';
 import { Options } from '../Option';
 
 const { Item } = Form;
@@ -21,6 +21,7 @@ const info = (
 
 function EngravingColor({ form, styles }) {
     const [item, setItem] = useState(null);
+    const [options, setOptions] = useState([...engravingColors]);
 
     const setData = (item) => {
         form.setFieldValue('engrColor', item);
@@ -31,18 +32,46 @@ function EngravingColor({ form, styles }) {
         setItem(value);
     }
 
+    const handleAdd = () => {
+        if (item === null || item === undefined || item === '') {
+            return;
+        }
+
+        if (!options.includes(item)) {
+            const newLocOptions = [...options, item];
+            setOptions(newLocOptions);
+        }
+    }
+
     return (
         <Col span={12} style={styles.col}>
             <LabelInfo title="Engraving Color" label={'ECLr'} info={info} required={true} styles={styles} />
-            <Item
-                name={'engrColor'}
-                rules={[{ required: true, message: '' }]}
-            >
-                <Input value={form.getFieldValue('engrColor')} onChange={(e) => handleChange(e.currentTarget.value)} />
-            </Item>
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <Item
+                    name={'engrColor'}
+                    rules={[{ required: true, message: '' }]}
+                >
+                    <Input value={form.getFieldValue('engrColor')} onChange={(e) => handleChange(e.currentTarget.value)} />
+                </Item>
+                <Button type="primary" onClick={() => handleAdd()}
+                    style={{
+                        height: '31px',
+                        padding: '0 15px',
+                        marginLeft: '2px',
+                        borderRadius: '4px',
+                        width: '20%',
+                        backgroundColor: 'green',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}
+                >
+                    +
+                </Button>
+            </div>
 
             <div style={styles.options}>
-                <Options options={engravingColors} selected={form.getFieldValue('engrColor')} setData={setData} />
+                <Options options={options} selected={form.getFieldValue('engrColor')} setData={setData} />
             </div>
         </Col>
     )

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { LabelInfo } from '../InfoBox';
-import { Form, Input } from 'antd';
+import { Form, Input, Button } from 'antd';
 import { Options } from '../Option';
 
 const { Item } = Form;
@@ -25,6 +25,7 @@ const info = (
 
 function Location({ form, styles }) {
     const [item, setItem] = useState(null);
+    const [options, setOptions] = useState([...locOptions]);
 
     const setData = (item) => {
         form.setFieldValue('loc', item);
@@ -35,18 +36,46 @@ function Location({ form, styles }) {
         setItem(value);
     }
 
+    const handleAdd = () => {
+        if (item === null || item === undefined || item === '') {
+            return;
+        }
+
+        if (!options.includes(item)) {
+            const newLocOptions = [...options, item];
+            setOptions(newLocOptions);
+        }
+    }
+
     return (
         <div>
             <LabelInfo title="Location" label='Loc' info={info} required={true} styles={styles} />
-            <Item
-                name='loc'
-                rules={[{ required: true, message: '' }]}
-            >
-                <Input value={form.getFieldValue('loc')} onChange={(e) => handleChange(e.currentTarget.value)} />
-            </Item>
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <Item
+                    name='loc'
+                    rules={[{ required: true, message: '' }]}
+                >
+                    <Input value={form.getFieldValue('loc')} onChange={(e) => handleChange(e.currentTarget.value)} />
+                </Item>
+                <Button type="primary" onClick={() => handleAdd()}
+                    style={{
+                        height: '31px',
+                        padding: '0 15px',
+                        marginLeft: '2px',
+                        borderRadius: '4px',
+                        width: '20%',
+                        backgroundColor: 'green',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}
+                >
+                    +
+                </Button>
+            </div>
 
             <div style={styles.options}>
-                <Options options={locOptions} selected={form.getFieldValue('loc')} setData={setData} />
+                <Options options={options} selected={form.getFieldValue('loc')} setData={setData} />
             </div>
         </div>
     )

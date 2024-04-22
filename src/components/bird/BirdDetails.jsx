@@ -67,6 +67,7 @@ const styles = {
         alignItems: 'center',
         border: '1px solid #d9d9d9',
         padding: '20px',
+        overflowX: 'auto',
     },
 
     col: {
