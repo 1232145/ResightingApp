@@ -30,34 +30,37 @@ function Band({ index, initBand, setIsBand, data, setData, styles }) {
     saveData(data);
     setBandNumber(n);
     form.setFieldsValue(data[n]);
+
+    const start = form.getFieldValue("bandStart");
+
+    if (start === undefined || start === '') {
+      setCurrentTime("bandStart");
+    }
   }
+
+  const setCurrentTime = (field) => {
+    const currentTime = new Date();
+    const hours = currentTime.getHours().toString().padStart(2, '0');
+    const minutes = currentTime.getMinutes().toString().padStart(2, '0');
+    const time = `${hours}:${minutes}`;
+
+    form.setFieldValue(field, time);
+  };
 
   useEffect(() => {
     switchBand(bandNumber);
+
+    const start = form.getFieldValue("bandStart");
+
+    if (start === undefined || start === '') {
+      setCurrentTime("bandStart");
+    }
   }, [])
 
   //navigate to feeding tab and save current band data
   const navigate = (bool) => {
     saveData(data);
     setIsBand(bool);
-  }
-
-  const generateTemplate = (field, label, options) => {
-    return (
-      <Col span={12} style={styles.col}>
-        <LabelInfo label={label} info='To be added' required={true} styles={styles} />
-        <Item
-          name={field}
-          rules={[{ required: true, message: 'Please enter a value!' }]}
-        >
-          <Input value={form.getFieldValue(field)} />
-        </Item>
-
-        <div style={styles.options}>
-          {/* <Options options={options} form={form} field={field} /> */}
-        </div>
-      </Col>
-    )
   }
 
   return (
@@ -75,19 +78,51 @@ function Band({ index, initBand, setIsBand, data, setData, styles }) {
         style={styles.form}
       >
         <div style={styles.topbox}>
-          {/* <div style={styles.leftTop}> */}
-          {/* <Item name='note' label='Notes'>
+          <div style={styles.leftTop}>
+
+            <div style={styles.buttonContainer}>
+              <Item
+                label="Time Start"
+                name="bandStart"
+                style={{ margin: '0px' }}
+              >
+                <Input value={form.getFieldValue('bandStart')} />
+              </Item>
+
+              <Button onClick={() => setCurrentTime("bandStart")} size="small" style={styles.timeButton}>
+                Time
+              </Button>
+            </div>
+
+            <div style={styles.buttonContainer}>
+              <Item
+                label="Time End"
+                name="bandEnd"
+                style={{ margin: '0px' }}
+              >
+                <Input value={form.getFieldValue('bandEnd')} />
+              </Item>
+
+              <Button onClick={() => setCurrentTime("bandEnd")} size="small" style={styles.timeButton}>
+                Time
+              </Button>
+            </div>
+
+            {/* <div style={styles.leftTop}> */}
+            {/* <Item name='note' label='Notes'>
               <Input.TextArea rows={5} style={styles.text} />
             </Item> */}
-          {/* </div> */}
-          <div>
-            <LabelInfo label="Band Number" info='To be added' required={true} styles={styles} />
-            <Item
-              name='number'
-              rules={[{ required: true, message: 'Please enter a value!' }]}
-            >
-              <Input value={form.getFieldValue('number')} />
-            </Item>
+            {/* </div> */}
+
+            <div style={styles.buttonContainer}>
+              <LabelInfo label="Band Number" info='To be added' required={true} styles={styles} />
+              <Item
+                name='number'
+                rules={[{ required: true, message: 'Please enter a value!' }]}
+              >
+                <Input value={form.getFieldValue('number')} />
+              </Item>
+            </div>
           </div>
 
           <div style={styles.rightTop}>

@@ -310,7 +310,9 @@ function BirdDetails({ setIsFeeding, data, setData, initFeeding, initBand }) {
     useEffect(() => {
         switchData(index);
 
-        if (form.getFieldValue("time") === '') {
+        const time = form.getFieldValue("time");
+
+        if (time === undefined || time === '') {
             setCurrentTime("time");
         }
     }, [])

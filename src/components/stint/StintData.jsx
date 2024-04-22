@@ -51,6 +51,8 @@ const styles = {
 
 // Default band detail data
 const initBand = {
+    bandStart: "",
+    bandEnd: '',
     type: "",
     color: "",
     engrColor: "",
@@ -112,7 +114,7 @@ function StintData() {
     const jsonToCSV = (json) => {
 
         const headers = [
-            'StintID', 'Obs Init, Island, Location/Blind, Time Start, Time End, Date (mm/dd/yy), Stint Notes, Species (Alpha), Time, Loc, Prox (m), Bird Notes, Band Type, Band Color, Engr. Color, Spec. Feat, Leg (L/R), Band Number, Band Wear Present (Y/N) /Wear Score, Read, Confidence, Band Type, Band Color, Engr. Color, Spec. Feat, Leg (L/R), Band Number, Band Wear Present (Y/N) /Wear Score, Confidence, Read'
+            'StintID', 'Obs Init, Island, Location/Blind, Time Start, Time End, Date (mm/dd/yy), Stint Notes, Species (Alpha), Time, Loc, Prox (m), Bird Notes, Band Start, Band End, Band Type, Band Color, Engr. Color, Spec. Feat, Leg (L/R), Band Number, Band Wear Present (Y/N) /Wear Score, Read, Confidence, Band Type, Band Color, Engr. Color, Spec. Feat, Leg (L/R), Band Number, Band Wear Present (Y/N) /Wear Score, Confidence, Read'
         ];
 
         const csvRows = [headers.join(',')];
@@ -123,8 +125,8 @@ function StintData() {
             const row = [
                 json.id, json.obsInit, json.island, json.blind, json.timeStart, json.timeEnd, json.date, json.stintNotes,
                 feeding.species, feeding.time, feeding.loc, feeding.prox, feeding.birdNotes,
-                band[0].type, band[0].color, band[0].engrColor, band[0].specFeat, band[0].leg, band[0].number, band[0].wearScore, band[0].read, band[0].confidence,
-                band[1].type, band[1].color, band[1].engrColor, band[1].specFeat, band[1].leg, band[1].number, band[1].wearScore, band[1].read, band[1].confidence
+                band[0].bandStart, band[0].bandEnd, band[0].type, band[0].color, band[0].engrColor, band[0].specFeat, band[0].leg, band[0].number, band[0].wearScore, band[0].read, band[0].confidence,
+                band[1].bandStart, band[1].bandEnd, band[1].type, band[1].color, band[1].engrColor, band[1].specFeat, band[1].leg, band[1].number, band[1].wearScore, band[1].read, band[1].confidence
             ]
 
             csvRows.push(row.join(', '));
@@ -169,6 +171,8 @@ function StintData() {
                 prox: row[i++],
                 birdNotes: row[i++],
                 band: [{
+                    bandStart: row[i++],
+                    bandEnd: row[i++],
                     type: row[i++],
                     color: row[i++],
                     engrColor: row[i++],
@@ -179,6 +183,8 @@ function StintData() {
                     read: row[i++],
                     confidence: row[i++],
                 }, {
+                    bandStart: row[i++],
+                    bandEnd: row[i++],
                     type: row[i++],
                     color: row[i++],
                     engrColor: row[i++],
@@ -243,7 +249,9 @@ function StintData() {
             return;
         }
 
-        if (form.getFieldValue('timeEnd') === '') {
+        const end = form.getFieldValue('timeEnd');
+
+        if (end === undefined || end === '') {
             setCurrentTime("timeEnd");
         }
 
@@ -333,7 +341,8 @@ function StintData() {
     // When users accidentally close the app, ask for confirmation
     useEffect(() => {
         //set the time when open the app
-        if (form.getFieldValue('timeStart') === '') {
+        const start = form.getFieldValue('timeStart')
+        if (start === undefined || start === '') {
             setCurrentTime("timeStart");
         }
 
